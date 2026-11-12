@@ -31,6 +31,9 @@
   });
   const prefill = CM.qs('prefill');
   if (prefill) { ta.value = prefill; syncText(); ta.focus(); history.replaceState(null, '', 'home.html'); }
+  // A message kept as a draft when the user stopped Checking
+  const draft = CM.store.get('draft', '');
+  if (!prefill && draft) { ta.value = draft; syncText(); CM.store.remove('draft'); }
 
   /* ---- Quick-pick chips ---- */
   CM.$$('[data-hint]').forEach(function (b) {
@@ -56,6 +59,9 @@
   function renderCases() {
     CM.api.cases().then(function (list) {
       const open = list.filter(function (c) { return !['resolved', 'refunded'].includes(c.status); }).slice(0, 3);
+      // Returning user: open cases come first, so they resume in one tap
+      const sec = CM.$('#open-section'), hero = CM.$('#ask');
+      if (open.length && sec.nextElementSibling !== hero) hero.before(sec);
       CM.$('#open-cases').innerHTML = open.length
         ? open.map(CM.caseItem).join('')
         : '<div class="empty card card-flat">' + CM.illus.family + '<h3>' + CM.esc(CM.t('home.empty.title')) + '</h3><p>' + CM.esc(CM.t('home.empty.body')) + '</p></div>';
@@ -65,11 +71,11 @@
   /* ---- Offline: show the cached last answer ---- */
   function lastScript() {
     const c = CM.store.lastResult();
-    const show = !navigator.onLine && c;
+    const show = !navigator.onLine && c && Array.isArray(c.issues);
     CM.$('#last-script').hidden = !show;
     if (!show) return;
-    CM.$('#last-text').textContent = CM.L(c.script);
-    CM.$('#last-badge').innerHTML = CM.badge.verdict(c.verdict);
+    CM.$('#last-text').textContent = CM.L(c.issues[0].script);
+    CM.$('#last-badge').innerHTML = CM.badge.verdict(c.issues[0].verdict);
     CM.$('#last-open').href = 'result.html?case=' + encodeURIComponent(c.caseId);
   }
   document.addEventListener('cm:offline', lastScript);

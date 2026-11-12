@@ -1,17 +1,17 @@
 /* CoverMe service worker: offline shell + timer-overdue notification clicks.
    Network-first for our pages and assets (fresh after every deploy), cache-first for fonts.
    Bump VERSION whenever shell files change. */
-const VERSION = 'coverme-v4';
+const VERSION = 'coverme-v5';
 const SHELL = [
   './', 'index.html', 'setup.html', 'home.html', 'checking.html', 'result.html', 'timer.html', 'complaint.html',
-  'cases.html', 'case.html', 'rights.html', 'settings.html', 'privacy.html', 'offline.html',
-  'manifest.webmanifest', 'assets/css/styles.css', 'assets/img/icon.svg',
+  'cases.html', 'case.html', 'rights.html', 'rule.html', 'settings.html', 'privacy.html', 'offline.html',
+  'manifest.webmanifest', 'assets/css/styles.css', 'assets/img/icon.svg', 'assets/icons/icon-192.png', 'assets/icons/icon-512.png', 'assets/icons/apple-touch-icon.png',
   'assets/js/icons.js', 'assets/js/i18n.js', 'assets/js/mock-data.js', 'assets/js/store.js', 'assets/js/api.js',
-  'assets/js/ui.js', 'assets/js/illustrations.js', 'assets/js/voice.js',
+  'assets/js/ui.js', 'assets/js/install.js', 'assets/js/share-rule.js', 'assets/js/illustrations.js', 'assets/js/voice.js',
   'assets/js/pages/welcome.js', 'assets/js/pages/setup.js', 'assets/js/pages/home.js', 'assets/js/pages/checking.js',
   'assets/js/pages/result.js', 'assets/js/pages/timer.js', 'assets/js/pages/complaint.js', 'assets/js/pages/cases.js',
   'assets/js/pages/case.js', 'assets/js/pages/rights.js', 'assets/js/pages/settings.js', 'assets/js/pages/privacy.js',
-  '404.html', 'assets/js/pages/notfound.js'
+  '404.html', 'assets/js/pages/notfound.js', 'assets/js/pages/rule.js'
 ];
 
 self.addEventListener('install', (e) => {

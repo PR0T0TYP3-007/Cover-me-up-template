@@ -15,7 +15,7 @@ CM.store = (function () {
     get, set, remove,
     consent() { return get('consent', false); },
     setConsent(v) { set('consent', v); },
-    profile() { return get('profile', { hmoId: null, planType: null, hospital: '' }); },
+    profile() { return get('profile', { patientRelation: null, hmoId: null, enrolleeId: '', memberName: '', cardExpiry: null, verification: null, planType: null, stateScheme: null, state: null, lga: null, facilityId: null, hospital: '' }); },
     setProfile(p) { set('profile', Object.assign(this.profile(), p)); },
     settings() { return Object.assign({ theme: 'system', notifications: false, demoMode: false, simError: false }, get('settings', {})); },
     setSettings(p) { set('settings', Object.assign(this.settings(), p)); },

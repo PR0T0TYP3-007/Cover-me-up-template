@@ -8,6 +8,11 @@
   <title>CoverMe — Set up</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CoverMe">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -21,27 +26,98 @@
     <main id="main" class="main">
       <div class="row-between">
         <button type="button" class="icon-btn" id="step-back" data-i18n-attr="aria-label:common.back" style="margin-left:-12px"><i data-icon="arrow-left"></i></button>
-        <div class="progress-dots" id="progress" aria-hidden="true"><span></span><span></span><span></span></div>
-        <button type="button" class="link-btn" id="skip" data-i18n="common.skip"></button>
+        <div class="progress-dots" id="progress" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <button type="button" class="link-btn" id="skip" data-i18n="setup.skip"></button>
       </div>
       <p class="sr-only" id="step-label" aria-live="polite"></p>
 
-      <!-- Step 1: HMO picker -->
-      <section class="stack-2" data-step="1" aria-labelledby="hmo-title">
+      <!-- Step 1: who is this for? (saved per case, not per account) -->
+      <section class="stack-2" data-step="1" aria-labelledby="who-title">
         <div class="stack">
-          <h1 id="hmo-title" data-i18n="setup.hmo.title"></h1>
-          <p class="muted" data-i18n="setup.hmo.hint"></p>
+          <h1 id="who-title" data-i18n="setup.who.title"></h1>
+          <p class="muted" data-i18n="setup.who.hint"></p>
         </div>
-        <div class="input-icon">
-          <i data-icon="search"></i>
-          <input id="hmo-search" class="input" type="search" autocomplete="off" data-i18n-attr="placeholder:setup.hmo.search;aria-label:setup.hmo.search">
+        <div class="stack" role="radiogroup" aria-labelledby="who-title" id="who">
+          <button type="button" class="choice" role="radio" aria-checked="false" data-who="me">
+            <span class="ic"><i data-icon="user"></i></span>
+            <span class="grow"><span class="title" data-i18n="rel.me"></span><br><span class="small muted" data-i18n="setup.who.me.sub"></span></span>
+            <span class="check"><i data-icon="check"></i></span>
+          </button>
+          <button type="button" class="choice" role="radio" aria-checked="false" data-who="family">
+            <span class="ic"><i data-icon="users"></i></span>
+            <span class="grow"><span class="title" data-i18n="setup.who.family"></span><br><span class="small muted" data-i18n="setup.who.family.sub"></span></span>
+            <span class="check"><i data-icon="check"></i></span>
+          </button>
+          <div class="chips sub-choices" id="relation" hidden role="group" aria-label="Family member">
+            <button type="button" class="chip" data-rel="child" aria-pressed="false" data-i18n="rel.child"></button>
+            <button type="button" class="chip" data-rel="spouse" aria-pressed="false" data-i18n="rel.spouse"></button>
+            <button type="button" class="chip" data-rel="parent" aria-pressed="false" data-i18n="rel.parent"></button>
+            <button type="button" class="chip" data-rel="other" aria-pressed="false" data-i18n="rel.other"></button>
+          </div>
         </div>
-        <div class="list hmo-list" id="hmo-list" role="listbox" aria-labelledby="hmo-title"></div>
-        <button type="button" class="link-btn" id="hmo-unsure" data-i18n="setup.hmo.notSure"></button>
       </section>
 
-      <!-- Step 2: plan type -->
-      <section class="stack-2" data-step="2" hidden aria-labelledby="plan-title">
+      <!-- Step 2: add the insurance (scan the card, or type it) -->
+      <section class="stack-2" data-step="2" hidden aria-labelledby="ins-title">
+        <div class="stack">
+          <h1 id="ins-title" data-i18n="setup.ins.title"></h1>
+          <p class="muted" data-i18n="setup.ins.hint"></p>
+        </div>
+
+        <div id="ins-choose" class="stack-2">
+          <label class="scan-card" for="card-file">
+            <span class="ribbon" data-i18n="setup.recommended"></span>
+            <span class="ic"><i data-icon="camera"></i></span>
+            <span><span class="title" data-i18n="setup.scan"></span><span class="sub" data-i18n="setup.scan.sub"></span></span>
+          </label>
+          <!-- Production: POST /me/card-scan (Gemini reads it in memory; the image is never stored) -->
+          <input type="file" id="card-file" accept="image/*" capture="environment" class="sr-only" tabindex="-1">
+          <div class="or-divider" data-i18n="home.or"></div>
+          <button type="button" class="btn btn-secondary btn-lg btn-block" id="type-it"><i data-icon="keyboard"></i><span data-i18n="setup.type"></span></button>
+        </div>
+
+        <div id="ins-scanning" class="card scanning" hidden aria-live="polite">
+          <div class="scan-frame" aria-hidden="true"></div>
+          <strong data-i18n="setup.scanning"></strong>
+        </div>
+
+        <!-- Confirm what the card scan read -->
+        <form id="ins-confirm" class="card stack-2" hidden novalidate>
+          <div class="stack"><h2 style="font-size:var(--fs-22)" data-i18n="setup.scan.check"></h2><p class="small muted" data-i18n="setup.scan.hint"></p></div>
+          <div class="banner banner-amber" id="expired" hidden><i data-icon="alert"></i><span data-i18n="setup.expired"></span></div>
+          <div class="field">
+            <div class="label-row"><label for="c-hmo" data-i18n="result.hmoLabel"></label><span class="from-card"><i data-icon="file" class="icon-sm"></i><span data-i18n="setup.fromCard"></span></span></div>
+            <select id="c-hmo" class="input select"></select>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="c-id" data-i18n="setup.enrollee.label"></label><span class="from-card"><i data-icon="file" class="icon-sm"></i><span data-i18n="setup.fromCard"></span></span></div>
+            <input id="c-id" class="input" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="c-name" data-i18n="setup.field.member"></label><input id="c-name" class="input" autocomplete="name"></div>
+            <div class="field"><label for="c-exp" data-i18n="setup.field.expiry"></label><input id="c-exp" class="input" type="date"></div>
+          </div>
+          <dl class="meta-list"><dt data-i18n="setup.field.plan"></dt><dd id="c-plan"></dd><dt data-i18n="setup.field.facility"></dt><dd id="c-fac"></dd></dl>
+        </form>
+
+        <!-- Type it: HMO picker + enrollee ID -->
+        <div id="ins-type" class="stack-2" hidden>
+          <div class="input-icon">
+            <i data-icon="search"></i>
+            <input id="hmo-search" class="input" type="search" autocomplete="off" data-i18n-attr="placeholder:setup.hmo.search;aria-label:setup.hmo.search">
+          </div>
+          <div class="list hmo-list" id="hmo-list" role="listbox" aria-labelledby="ins-title"></div>
+          <div class="field">
+            <label for="t-id" data-i18n="setup.enrollee.label"></label>
+            <input id="t-id" class="input" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. RHL/1234/5678">
+            <span class="hint" data-i18n="setup.enrollee.hint"></span>
+            <span class="hint" id="id-warn" hidden style="color:var(--amber-700)"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3: plan type (decides which rules apply and where complaints go) -->
+      <section class="stack-2" data-step="3" hidden aria-labelledby="plan-title">
         <div class="stack">
           <h1 id="plan-title" data-i18n="setup.plan.title"></h1>
           <p class="muted" data-i18n="setup.plan.hint"></p>
@@ -52,11 +128,20 @@
             <span class="grow"><span class="title" data-i18n="setup.plan.nhia"></span><br><span class="small muted" data-i18n="setup.plan.nhia.sub"></span></span>
             <span class="check"><i data-icon="check"></i></span>
           </button>
+          <div class="chips sub-choices" id="nhia-sub" hidden role="group" data-i18n-attr="aria-label:setup.plan.which">
+            <button type="button" class="chip" data-sub="nhia_formal" aria-pressed="false" data-i18n="plan.nhia_formal"></button>
+            <button type="button" class="chip" data-sub="nhia_gifship" aria-pressed="false" data-i18n="plan.nhia_gifship"></button>
+            <button type="button" class="chip" data-sub="nhia_other" aria-pressed="false" data-i18n="plan.nhia_other"></button>
+          </div>
           <button type="button" class="choice" role="radio" aria-checked="false" data-plan="state">
             <span class="ic"><i data-icon="hospital"></i></span>
             <span class="grow"><span class="title" data-i18n="setup.plan.state"></span><br><span class="small muted" data-i18n="setup.plan.state.sub"></span></span>
             <span class="check"><i data-icon="check"></i></span>
           </button>
+          <div class="field sub-choices" id="state-sub" hidden>
+            <label for="agency" class="sr-only" data-i18n="setup.plan.agency"></label>
+            <select id="agency" class="input select"></select>
+          </div>
           <button type="button" class="choice" role="radio" aria-checked="false" data-plan="private">
             <span class="ic"><i data-icon="user"></i></span>
             <span class="grow"><span class="title" data-i18n="setup.plan.private"></span><br><span class="small muted" data-i18n="setup.plan.private.sub"></span></span>
@@ -70,18 +155,32 @@
         </div>
       </section>
 
-      <!-- Step 3: hospital -->
-      <section class="stack-2" data-step="3" hidden aria-labelledby="hosp-title">
+      <!-- Step 4: hospital — state → LGA → search, or Use my location, or type it -->
+      <section class="stack-2" data-step="4" hidden aria-labelledby="hosp-title">
         <div class="stack">
           <h1 id="hosp-title" data-i18n="setup.hosp.title"></h1>
           <p class="muted" data-i18n="setup.hosp.hint"></p>
         </div>
-        <div class="field">
-          <label for="hospital" data-i18n="setup.hosp.label"></label>
-          <div class="input-icon">
-            <i data-icon="hospital"></i>
-            <input id="hospital" class="input" type="text" autocomplete="organization" maxlength="120" data-i18n-attr="placeholder:setup.hosp.placeholder">
+        <div id="picked" class="picked" hidden></div>
+        <div id="finder" class="stack-2">
+          <button type="button" class="btn btn-secondary btn-block" id="near"><i data-icon="locate"></i><span data-i18n="setup.hosp.near"></span></button>
+          <div class="field-row">
+            <div class="field"><label for="h-state" data-i18n="setup.hosp.state"></label><select id="h-state" class="input select"></select></div>
+            <div class="field"><label for="h-lga" data-i18n="setup.hosp.lga"></label><select id="h-lga" class="input select"></select></div>
           </div>
+          <div class="input-icon">
+            <i data-icon="search"></i>
+            <input id="h-q" class="input" type="search" autocomplete="off" data-i18n-attr="placeholder:setup.hosp.placeholder;aria-label:setup.hosp.search">
+          </div>
+          <div class="list picker-results" id="h-results" role="listbox" aria-labelledby="hosp-title" hidden></div>
+          <p class="hint" data-i18n="setup.hosp.scope"></p>
+          <details id="free-wrap">
+            <summary class="link-btn" style="list-style:none;cursor:pointer" data-i18n="setup.hosp.notListed"></summary>
+            <div class="field" style="margin-top:8px">
+              <label for="hospital" class="sr-only" data-i18n="setup.hosp.label"></label>
+              <input id="hospital" class="input" type="text" autocomplete="organization" maxlength="120" data-i18n-attr="placeholder:setup.hosp.label">
+            </div>
+          </details>
         </div>
       </section>
     </main>
@@ -97,6 +196,7 @@
   <script src="assets/js/store.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/ui.js"></script>
+  <script src="assets/js/install.js"></script>
   <script src="assets/js/illustrations.js"></script>
   <script src="assets/js/pages/setup.js"></script>
 </body>

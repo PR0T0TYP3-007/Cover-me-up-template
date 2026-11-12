@@ -2,15 +2,25 @@
   "name": "CoverMe — know your HMO rights",
   "short_name": "CoverMe",
   "description": "The calm advocate in your pocket: your HMO and NHIA rights at the hospital desk.",
-  "start_url": "home.html",
+  "id": "./",
+  "start_url": "./home.html?source=homescreen",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FAF7F2",
+  "background_color": "#F7F1E6",
   "theme_color": "#0B5D4B",
-  "lang": "en",
+  "lang": "en-NG",
+  "categories": ["health", "medical", "utilities"],
   "icons": [
-    { "src": "assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
-    { "src": "assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+    { "src": "assets/icons/icon-96.png", "sizes": "96x96", "type": "image/png" },
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "New case", "short_name": "New case", "url": "./home.html#ask", "icons": [{ "src": "assets/icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "My cases", "short_name": "Cases", "url": "./cases.html", "icons": [{ "src": "assets/icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "Know your rights", "short_name": "Rights", "url": "./rights.html", "icons": [{ "src": "assets/icons/icon-96.png", "sizes": "96x96" }] }
   ]
 }

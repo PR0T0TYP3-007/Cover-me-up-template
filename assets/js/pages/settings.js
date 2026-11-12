@@ -14,12 +14,21 @@
     seg('#lang', CM.i18n.lang, function (v) { CM.i18n.set(v); sync(); });
     seg('#theme', s.theme, function (v) { CM.store.setSettings({ theme: v }); CM.ui.applyTheme(); sync(); });
 
+    /* Insurance: HMO, enrollee ID (masked), plan, hospital, patient, and how sure we are */
     const p = CM.store.profile(); const h = p.hmoId && CM.api.hmo(p.hmoId);
-    const plan = p.planType ? CM.t('setup.plan.' + p.planType) : '';
-    CM.$('#hmo-row').innerHTML = (h ? CM.avatar(h.name) : '<span class="avatar" style="background:var(--line);color:var(--muted)">' + CM.icon('plus') + '</span>') +
-      '<span class="grow"><span class="title">' + CM.esc(h ? h.name : CM.t('settings.noHmo')) + '</span><br><span class="sub">' +
-      CM.esc([plan, p.hospital].filter(Boolean).join(' · ') || CM.t('setup.hmo.hint')) + '</span></span>' +
-      '<span class="small" style="color:var(--brand-700);font-weight:600">' + CM.esc(CM.t('settings.change')) + '</span>';
+    const esc = CM.esc;
+    const expired = p.cardExpiry && Date.parse(p.cardExpiry) < Date.now();
+    const row = function (icon, title, sub) { return '<div class="list-item">' + CM.icon(icon) + '<span class="grow"><span class="sub">' + esc(title) + '</span><br><span class="title">' + sub + '</span></span></div>'; };
+    CM.$('#insurance').innerHTML =
+      '<a class="list-item" href="setup.html?edit=1">' + (h ? CM.avatar(h.name) : '<span class="avatar" style="background:var(--line);color:var(--muted)">' + CM.icon('plus') + '</span>') +
+        '<span class="grow"><span class="title">' + esc(h ? h.name : CM.t('settings.noHmo')) + '</span><br><span class="sub">' + esc(p.planType ? CM.t('plan.' + p.planType) : CM.t('setup.hmo.hint')) + '</span></span>' +
+        '<span class="small" style="color:var(--brand-700);font-weight:600">' + esc(CM.t('settings.change')) + '</span></a>' +
+      (h ? row('id-card', CM.t('settings.enrollee'), esc(p.enrolleeId ? CM.maskId(p.enrolleeId) : '—')) +
+        '<div class="list-item">' + CM.icon('shield-check') + '<span class="grow"><span class="sub">' + esc(CM.t('settings.status')) + '</span><br>' + CM.badge.verification(p.verification || 'self_reported') +
+        '<br><span class="sub">' + esc(CM.t('verif.' + (p.verification || 'self_reported') + '.sub')) + '</span></span></div>' : '') +
+      (expired ? '<div class="list-item" style="background:var(--amber-50)">' + CM.icon('alert') + '<span class="grow small">' + esc(CM.t('setup.expired')) + '</span></div>' : '') +
+      row('hospital', CM.t('setup.hosp.label'), esc(p.hospital || '—')) +
+      row('users', CM.t('settings.patient'), esc(p.patientRelation ? CM.t('rel.' + p.patientRelation) : '—'));
 
     const granted = 'Notification' in window && Notification.permission === 'granted';
     const denied = 'Notification' in window && Notification.permission === 'denied';

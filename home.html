@@ -8,6 +8,11 @@
   <title>CoverMe — Home</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CoverMe">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -73,7 +78,8 @@
           <section class="stack-2" aria-labelledby="quick-title">
             <h2 id="quick-title" class="eyebrow" data-i18n="home.quick"></h2>
             <div class="quick-grid">
-              <button type="button" class="quick-tile" data-hint="drug_not_covered" data-key="chip.buyOutside"><span class="ic"><i data-icon="pill"></i></span><span data-i18n="chip.buyOutside"></span></button>
+              <button type="button" class="quick-tile" data-hint="drug_refused" data-key="chip.buyOutside"><span class="ic"><i data-icon="pill"></i></span><span data-i18n="chip.buyOutside"></span></button>
+              <button type="button" class="quick-tile" data-hint="drug_unavailable" data-key="chip.outOfStock"><span class="ic"><i data-icon="pill"></i></span><span data-i18n="chip.outOfStock"></span></button>
               <button type="button" class="quick-tile" data-hint="cash_demanded" data-key="chip.payCash"><span class="ic"><i data-icon="banknote"></i></span><span data-i18n="chip.payCash"></span></button>
               <button type="button" class="quick-tile" data-hint="auth_delay" data-key="chip.waitApproval"><span class="ic"><i data-icon="hourglass"></i></span><span data-i18n="chip.waitApproval"></span></button>
               <button type="button" class="quick-tile" data-hint="referral_delay" data-key="chip.referral"><span class="ic"><i data-icon="referral"></i></span><span data-i18n="chip.referral"></span></button>
@@ -83,7 +89,7 @@
 
         <div class="col-side">
           <!-- Open cases -->
-          <section class="stack" aria-labelledby="open-title">
+          <section class="stack" aria-labelledby="open-title" id="open-section">
             <div class="section-title"><h2 id="open-title" data-i18n="home.openCases"></h2><a href="cases.html" data-i18n="common.seeAll"></a></div>
             <div class="stack" id="open-cases">
               <div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>
@@ -112,6 +118,7 @@
   <script src="assets/js/store.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/ui.js"></script>
+  <script src="assets/js/install.js"></script>
   <script src="assets/js/illustrations.js"></script>
   <script src="assets/js/voice.js"></script>
   <script src="assets/js/pages/home.js"></script>

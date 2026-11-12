@@ -8,12 +8,17 @@
   <title>CoverMe — 1-hour timer</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CoverMe">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
 </head>
-<body data-page="timer" data-back="cases.html" data-title="timer.title">
+<body data-page="timer" data-back="home.html" data-hard-back="1" data-title="timer.title">
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app">
     <header id="topbar"></header>
@@ -37,6 +42,7 @@
             <div class="stack" style="align-items:center;text-align:center">
               <h1 id="timer-status" style="font-size:1.75rem"></h1>
               <p class="mono muted" id="deadline"></p>
+              <span class="badge badge-amber" id="approx" hidden><i data-icon="help"></i><span data-i18n="timer.approx"></span></span>
             </div>
           </section>
           <p class="sr-only" id="announce" aria-live="polite"></p>
@@ -48,6 +54,12 @@
         </div>
 
         <div class="col-side">
+          <div class="banner banner-info" id="install-prompt" hidden style="position:relative;padding-right:48px">
+            <i data-icon="bell"></i>
+            <span class="stack" style="gap:8px"><strong data-i18n="timer.install.title"></strong><span id="install-body"></span>
+              <button type="button" class="btn btn-primary" id="install-go" style="align-self:flex-start;min-height:44px"><i data-icon="plussq"></i><span data-i18n="timer.install.btn"></span></button></span>
+            <button type="button" class="icon-btn" id="install-x" data-i18n-attr="aria-label:common.dismiss" style="position:absolute;top:4px;right:4px"><i data-icon="x"></i></button>
+          </div>
           <div id="call"></div>
           <section class="card stack-2" aria-labelledby="sofar-title">
             <h2 id="sofar-title" class="eyebrow" data-i18n="timer.sofar"></h2>
@@ -71,6 +83,7 @@
   <script src="assets/js/store.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/ui.js"></script>
+  <script src="assets/js/install.js"></script>
   <script src="assets/js/pages/timer.js"></script>
 </body>
 </html>

@@ -8,12 +8,17 @@
   <title>CoverMe — Complaint</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CoverMe">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
 </head>
-<body data-page="complaint" data-back="cases.html" data-title="complaint.title">
+<body data-page="complaint" data-back="home.html" data-hard-back="1" data-title="complaint.title">
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app">
     <header id="topbar"></header>
@@ -21,15 +26,15 @@
     <main id="main" class="main">
       <div class="cols">
         <div class="col-main">
-      <!-- Escalation ladder: HMO -> NHIA call centre -> NHIA Enforcement -->
+      <!-- Escalation: HMO first, then the regulator for the plan (NHIA, or the state agency for state schemes) -->
       <section class="stack" aria-labelledby="ladder-title">
         <div class="row-between"><h2 id="ladder-title" class="eyebrow" data-i18n="complaint.ladder"></h2><span class="small muted" id="step-of"></span></div>
-        <div class="ladder" id="ladder">
-          <span class="rung" data-r="hmo" data-i18n="recipient.hmo"></span>
-          <span class="rung" data-r="nhia_call" data-i18n="recipient.nhia_call"></span>
-          <span class="rung" data-r="nhia_enf" data-i18n="recipient.nhia_enf"></span>
+        <div class="ladder" id="ladder" style="grid-template-columns:1fr 1fr">
+          <span class="rung" data-r="hmo" id="rung-hmo"></span>
+          <span class="rung" data-r="regulator" id="rung-reg"></span>
         </div>
         <h1 id="to-title" style="font-size:var(--fs-22);margin-top:8px"></h1>
+        <p class="small muted" id="timing" hidden data-i18n="complaint.timing"></p>
       </section>
 
       <!-- Personal details are asked for only here -->
@@ -45,11 +50,17 @@
         </div>
         <div class="field">
           <label for="enrollee" data-i18n="complaint.enrollee"></label>
-          <input id="enrollee" class="input" autocomplete="off" maxlength="30">
+          <input id="enrollee" class="input" autocomplete="off" autocapitalize="characters" spellcheck="false" required maxlength="30">
         </div>
         <p class="why"><i data-icon="lock"></i><span data-i18n="complaint.why"></span></p>
       </form>
 
+      <!-- Mode B: CoverMe sends it (final build). Refused without consent and an enrollee ID. -->
+      <section class="mode-b" aria-labelledby="modeb-title">
+        <div class="stack" style="gap:4px"><h2 id="modeb-title" style="font-size:var(--fs-18)" data-i18n="complaint.coverme"></h2><p class="small muted" data-i18n="complaint.coverme.sub"></p></div>
+        <label class="consent"><input type="checkbox" id="consent"><span id="consent-text"></span></label>
+        <button type="button" class="btn btn-secondary btn-block" id="send-b" disabled><i data-icon="send"></i><span data-i18n="complaint.coverme.btn"></span></button>
+      </section>
         </div>
         <div class="col-side sticky">
       <!-- Paper-style letter preview -->
@@ -59,15 +70,16 @@
         <article class="letter" id="letter" aria-live="polite"></article>
       </section>
 
-      <!-- Send options -->
+      <!-- Mode A: the user sends it themselves -->
       <section class="stack" aria-labelledby="send-title">
-        <h2 id="send-title" class="eyebrow" data-i18n="complaint.send"></h2>
-        <p class="field-error" id="required" hidden data-i18n="complaint.required"></p>
+        <h2 id="send-title" class="eyebrow" data-i18n="complaint.youSend"></h2>
+        <p class="field-error" id="required" hidden></p>
         <div class="send-grid">
           <a class="btn btn-secondary" id="send-email" href="#"><i data-icon="mail"></i><span data-i18n="complaint.email"></span></a>
           <a class="btn btn-secondary" id="send-wa" href="#" target="_blank" rel="noopener"><i data-icon="chat"></i><span data-i18n="complaint.whatsapp"></span></a>
+          <a class="btn btn-secondary" id="send-call" href="#"><i data-icon="phone"></i><span data-i18n="complaint.call"></span></a>
           <button type="button" class="btn btn-secondary" id="send-pdf"><i data-icon="download"></i><span data-i18n="complaint.pdf"></span></button>
-          <button type="button" class="btn btn-secondary" id="send-copy"><i data-icon="copy"></i><span data-i18n="complaint.copy"></span></button>
+          <button type="button" class="btn btn-secondary" id="send-copy" style="grid-column:1 / -1"><i data-icon="copy"></i><span data-i18n="complaint.copy"></span></button>
         </div>
         <p class="small muted" id="next-step"></p>
       </section>
@@ -86,6 +98,7 @@
   <script src="assets/js/store.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/ui.js"></script>
+  <script src="assets/js/install.js"></script>
   <script src="assets/js/pages/complaint.js"></script>
 </body>
 </html>

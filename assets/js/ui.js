@@ -28,40 +28,53 @@ window.CM = window.CM || {};
 
   /* ---------- Status, verdict and issue metadata (colour + icon + word) ---------- */
   CM.meta = {
+    /* Case lifecycle: open -> waiting_hmo -> overdue -> complaint_hmo -> complaint_regulator -> resolved | refunded */
     status: {
       open: { cls: 'brand', icon: 'circle-dot' }, waiting_hmo: { cls: 'amber', icon: 'hourglass' },
-      overdue: { cls: 'danger', icon: 'alert' }, escalated: { cls: 'brand', icon: 'flag' },
+      overdue: { cls: 'danger', icon: 'alert' }, complaint_hmo: { cls: 'brand', icon: 'flag' },
+      complaint_regulator: { cls: 'brand', icon: 'flag' },
       resolved: { cls: 'success', icon: 'check-circle' }, refunded: { cls: 'success', icon: 'banknote' }
     },
     verdict: {
       likely_covered: { cls: 'success', icon: 'check-circle' }, rule_applies: { cls: 'brand', icon: 'shield-check' },
       legit_charge: { cls: 'neutral', icon: 'info' }, confirm_with_hmo: { cls: 'amber', icon: 'help' }
     },
-    issue: { drug_not_covered: 'pill', cash_demanded: 'banknote', auth_delay: 'hourglass', referral_delay: 'referral', other: 'message' },
+    issue: { drug_refused: 'pill', drug_unavailable: 'pill', cash_demanded: 'banknote', auth_delay: 'hourglass', referral_delay: 'referral', other: 'message' },
+    verification: { self_reported: { cls: 'neutral', icon: 'user' }, card_scanned: { cls: 'brand', icon: 'file' }, hmo_confirmed: { cls: 'success', icon: 'shield-check' } },
     event: {
       message: { icon: 'message', cls: '' }, verdict: { icon: 'shield-check', cls: '' }, emergency: { icon: 'octagon', cls: 'danger' },
+      emergency_help: { icon: 'octagon', cls: 'danger' }, emergency_dismissed: { icon: 'octagon', cls: '' },
       timer_started: { icon: 'timer', cls: 'amber' }, hmo_responded: { icon: 'phone', cls: '' }, hmo_called: { icon: 'phone', cls: '' },
       code_received: { icon: 'check', cls: 'success' }, paid: { icon: 'banknote', cls: 'amber' }, overdue: { icon: 'alert', cls: 'danger' },
-      escalated: { icon: 'flag', cls: '' }, resolved: { icon: 'check-circle', cls: 'success' }, refunded: { icon: 'banknote', cls: 'success' },
+      escalated: { icon: 'flag', cls: '' }, delivered: { icon: 'mail', cls: 'success' }, hmo_replied: { icon: 'message', cls: 'success' },
+      resolved: { icon: 'check-circle', cls: 'success' }, refunded: { icon: 'banknote', cls: 'success' },
+      evidence: { icon: 'file', cls: '' }, details_changed: { icon: 'pencil', cls: '' }, bad_number: { icon: 'phone', cls: 'danger' },
       refused: { icon: 'x', cls: 'danger' }, note: { icon: 'pencil', cls: '' }
     }
   };
+  /* Regulator name for a case: NHIA, or the state agency for state schemes */
+  CM.regulatorName = function (c) { return CM.api.regulatorFor(c || { planType: CM.store.profile().planType, stateScheme: CM.store.profile().stateScheme }).name; };
+  CM.statusLabel = function (s, c) { return CM.t('status.' + s, { r: CM.regulatorName(c) }); };
   CM.badge = {
-    status(s) { const m = CM.meta.status[s] || CM.meta.status.open; return '<span class="badge badge-' + m.cls + '">' + CM.icon(m.icon) + esc(CM.t('status.' + s)) + '</span>'; },
+    status(s, c) { const m = CM.meta.status[s] || CM.meta.status.open; return '<span class="badge badge-' + m.cls + '">' + CM.icon(m.icon) + esc(CM.statusLabel(s, c)) + '</span>'; },
     verdict(v) { const m = CM.meta.verdict[v] || CM.meta.verdict.confirm_with_hmo; return '<span class="badge badge-' + m.cls + '">' + CM.icon(m.icon) + esc(CM.t('verdict.' + v)) + '</span>'; },
     /* The verdict as an inked rubber stamp (result screen) */
-    stamp(v, animate) { const m = CM.meta.verdict[v] || CM.meta.verdict.confirm_with_hmo; return '<span class="stamp stamp-' + m.cls + (animate ? ' in' : '') + '">' + CM.icon(m.icon) + esc(CM.t('verdict.' + v)) + '</span>'; }
+    stamp(v, animate) { const m = CM.meta.verdict[v] || CM.meta.verdict.confirm_with_hmo; return '<span class="stamp stamp-' + m.cls + (animate ? ' in' : '') + '">' + CM.icon(m.icon) + esc(CM.t('verdict.' + v)) + '</span>'; },
+    /* How sure we are about the insurance: never "verified" on the user's word alone */
+    verification(v) { if (!v || !CM.meta.verification[v]) return ''; const m = CM.meta.verification[v]; return '<span class="badge badge-' + m.cls + '">' + CM.icon(m.icon) + esc(CM.t('verif.' + v)) + '</span>'; }
   };
   CM.eventLabel = function (e) {
-    const r = e.recipient ? CM.t(e.recipient === 'hmo' ? 'recipient.hmoInline' : 'recipient.' + e.recipient) : '';
-    return CM.t('event.' + e.type, { amount: CM.fmt.naira(e.amount), r });
+    const r = e.recipientName || (e.recipient === 'hmo' ? CM.t('recipient.hmoInline') : '');
+    let label = CM.t(e.type === 'escalated' && e.mode === 'coverme_sent' ? 'event.escalated_b' : 'event.' + e.type, { amount: CM.fmt.naira(e.amount), r: r });
+    if (e.type === 'timer_started' && e.approximate) label += ' (' + CM.t('event.approximate') + ')';
+    return label;
   };
   CM.renderTimeline = function (events) {
     return '<ol class="timeline">' + events.map(function (e) {
       const m = CM.meta.event[e.type] || CM.meta.event.note;
       let note = '';
       if (e.type === 'message' && e.note) note = '“' + esc(e.note) + '”';
-      else if (e.type === 'verdict') note = esc(CM.t('verdict.' + e.note));
+      else if (e.type === 'verdict') note = esc(String(e.note || '').split(',').map(function (v) { return CM.t('verdict.' + v); }).join(' · '));
       else if (e.note) note = esc(e.note);
       if (e.code) note = (note ? note + ' · ' : '') + 'Code: ' + esc(e.code);
       return '<li><span class="dot ' + m.cls + '">' + CM.icon(m.icon) + '</span><div class="body"><div class="what">' + esc(CM.eventLabel(e)) + '</div>' +
@@ -71,32 +84,47 @@ window.CM = window.CM || {};
   CM.avatar = function (name, cls) {
     return '<span class="avatar' + (cls ? ' ' + cls : '') + '" style="background:' + CM.mock.colorFor(name) + '" aria-hidden="true">' + esc(CM.mock.initials(name)) + '</span>';
   };
+  /* Case title: the first issue, plus "+N" when one message held several problems */
+  CM.caseTitle = function (c) { const n = c.issues.length; return CM.t('issue.' + c.issues[0].type) + (n > 1 ? ' +' + (n - 1) : ''); };
   CM.caseItem = function (c) {
-    const title = CM.t('issue.' + c.issueType);
-    const sub = CM.L(c.headline);
+    const first = c.issues[0];
     return '<a class="case-item" data-status="' + esc(c.status) + '" href="case.html?id=' + encodeURIComponent(c.caseId) + '">' +
-      '<span class="ic">' + CM.icon(CM.meta.issue[c.issueType] || 'message') + '</span>' +
-      '<span class="grow"><span class="row-between"><span class="title">' + esc(title) + '</span></span>' +
-      '<span class="meta">' + esc(sub) + '</span>' +
-      '<span class="row" style="flex-wrap:wrap">' + CM.badge.status(c.status) + '<span class="meta">' + esc(CM.fmt.rel(c.createdAt)) + '</span></span></span>' +
+      '<span class="ic">' + CM.icon(CM.meta.issue[first.type] || 'message') + '</span>' +
+      '<span class="grow"><span class="row-between"><span class="title">' + esc(CM.caseTitle(c)) + '</span></span>' +
+      '<span class="meta">' + esc(CM.L(first.headline)) + '</span>' +
+      '<span class="row" style="flex-wrap:wrap">' + CM.badge.status(c.status, c) + '<span class="meta">' + esc(CM.fmt.rel(c.createdAt)) + '</span></span></span>' +
       CM.icon('chevron-right', 'chev') + '</a>';
   };
 
-  /* HMO call bar: one-tap call. Shown even when everything else fails. */
-  CM.callBar = function (hmo, askFor) {
+  /* HMO call bar: one-tap call, shown even when everything else fails.
+     "This number didn't work" logs it (so research can fix the seed) and reveals the regulator's line. */
+  CM.callBar = function (hmo, askFor, opts) {
+    opts = opts || {};
     if (!hmo || !hmo.tel) {
       return '<a class="call-bar" href="setup.html?edit=1">' + '<span class="avatar" style="background:var(--paper-2);color:var(--brand-700)">' + CM.icon('plus') + '</span>' +
         '<span class="grow"><span class="name">' + esc(CM.t('home.setHmo')) + '</span><br><span class="ask">' + esc(CM.t('result.hmoLabel')) + '</span></span>' + CM.icon('chevron-right') + '</a>';
     }
-    // "Ask for" gets its own full-width row so it never gets squeezed beside the Call button on phones
-    return '<div class="call-bar">' + CM.avatar(hmo.name) + '<span class="grow"><span class="name">' + esc(hmo.name) + '</span><br><span class="phone">' + esc(hmo.phone) + '</span></span>' +
+    const reg = CM.api.regulatorFor(opts.caseObj || { planType: CM.store.profile().planType, stateScheme: CM.store.profile().stateScheme });
+    return '<div class="call-wrap"><div class="call-bar">' + CM.avatar(hmo.name) + '<span class="grow"><span class="name">' + esc(hmo.name) + '</span><br><span class="phone">' + esc(hmo.phone) + '</span></span>' +
       '<a href="tel:' + esc(hmo.tel) + '" aria-label="' + esc(CM.t('result.call') + ' ' + hmo.name + ', ' + hmo.phone) + '">' + CM.icon('phone') + '<span>' + esc(CM.t('result.call')) + '</span></a>' +
-      (askFor ? '<span class="ask-row ask">' + CM.icon('file') + '<span>' + esc(CM.t('result.askFor')) + ' <strong>' + esc(CM.L(askFor)) + '</strong></span></span>' : '') + '</div>';
+      (askFor ? '<span class="ask-row ask">' + CM.icon('file') + '<span>' + esc(CM.t('result.askFor')) + ' <strong>' + esc(CM.L(askFor)) + '</strong></span></span>' : '') + '</div>' +
+      '<button type="button" class="link-btn small bad-number" data-case="' + esc(opts.caseId || '') + '">' + esc(CM.t('result.badNumber')) + '</button>' +
+      (reg.tel ? '<div class="call-bar call-fallback" hidden><span class="avatar" style="background:var(--ink);color:var(--paper)">' + CM.icon('shield-check') + '</span><span class="grow"><span class="ask">' + esc(CM.t('result.fallbackLine')) + '</span><br><span class="name">' + esc(reg.name) + '</span><br><span class="phone">' + esc(reg.phone) + '</span></span>' +
+        '<a href="tel:' + esc(reg.tel) + '">' + CM.icon('phone') + '<span>' + esc(CM.t('result.call')) + '</span></a></div>' : '') + '</div>';
   };
+  document.addEventListener('click', function (e) {
+    const b = e.target.closest('.bad-number'); if (!b) return;
+    const wrap = b.closest('.call-wrap'); const fb = wrap && wrap.querySelector('.call-fallback');
+    if (fb) fb.hidden = false;
+    b.hidden = true;
+    if (b.dataset.case) CM.api.addEvent(b.dataset.case, { type: 'bad_number' });
+    CM.ui.toast(CM.t('result.badLogged'), 'phone');
+  });
   CM.profileHmo = function () {
     const h = CM.store.profile().hmoId && CM.api.hmo(CM.store.profile().hmoId);
-    return h ? { id: h.id, name: h.name, phone: h.phone, tel: h.phoneTel, email: h.email } : null;
+    return h ? { id: h.id, name: h.name, phone: h.phone, tel: h.phoneTel, complaintEmail: h.complaintEmail } : null;
   };
+  CM.maskId = function (id) { id = String(id || ''); return id.length > 4 ? '•••• ' + id.slice(-4) : id; };
 
   /* ---------- Shell: top bar + bottom nav ---------- */
   function renderShell() {
@@ -127,7 +155,7 @@ window.CM = window.CM || {};
     }
     const items = [['home', 'home.html', 'home', 'nav.home'], ['cases', 'cases.html', 'folder', 'nav.cases'], ['rights', 'rights.html', 'book', 'nav.rights'], ['settings', 'settings.html', 'settings', 'nav.settings']];
     // Which nav section a page belongs to (sub-screens highlight their parent)
-    const SECTION = { home: 'home', checking: 'home', result: 'home', cases: 'cases', case: 'cases', timer: 'cases', complaint: 'cases', rights: 'rights', settings: 'settings', privacy: 'settings' };
+    const SECTION = { home: 'home', checking: 'home', result: 'home', cases: 'cases', case: 'cases', timer: 'cases', complaint: 'cases', rights: 'rights', rule: 'rights', settings: 'settings', privacy: 'settings' };
     const active = b.dataset.nav || SECTION[b.dataset.page];
     const navLinks = function () {
       return items.map(function (it) {
@@ -285,6 +313,22 @@ window.CM = window.CM || {};
     });
   }
 
+  /* "When did the hospital ask your HMO?" (logic review gap 3): the hour runs from the hospital's
+     request to the HMO, not from when the user opens the app. Don't know -> start now, marked approximate. */
+  function askTimerStart(caseId, done) {
+    const opts = [['now', 0, 'timer.ago.now'], ['30', 30, 'timer.ago.30'], ['60', 61, 'timer.ago.60'], ['unknown', null, 'timer.ago.unknown']];
+    const sh = sheet(
+      '<div class="row-between"><h2>' + esc(CM.t('timer.ask')) + '</h2><button class="icon-btn" data-close aria-label="' + esc(CM.t('common.close')) + '">' + CM.icon('x') + '</button></div>' +
+      '<p class="muted">' + esc(CM.t('timer.askHint')) + '</p>' +
+      opts.map(function (o) { return '<button type="button" class="choice" data-ago="' + o[0] + '"><span class="ic">' + CM.icon(o[0] === 'unknown' ? 'help' : 'clock') + '</span><span class="grow title">' + esc(CM.t(o[2])) + '</span>' + CM.icon('chevron-right', 'chev') + '</button>'; }).join(''),
+      { label: CM.t('timer.ask') });
+    sh.el.addEventListener('click', function (e) {
+      const b = e.target.closest('[data-ago]'); if (!b) return;
+      const o = opts.find(function (x) { return x[0] === b.dataset.ago; });
+      CM.api.startTimer(caseId, { agoMinutes: o[1] }).then(function (c) { sh.close(); if (done) done(c); });
+    });
+  }
+
   /* ---------- Emergency takeover (can appear over any screen) ---------- */
   function emergency(o) {
     o = o || {};
@@ -298,16 +342,23 @@ window.CM = window.CM || {};
       '<p class="note" data-i18n="emg.signs"></p><div class="grow"></div>' +
       '<a class="btn btn-block call-112" href="tel:112">' + CM.icon('phone') + '<span data-i18n="emg.call"></span></a>' +
       '<p class="note" data-i18n="emg.note"></p>' +
-      '<button type="button" class="btn btn-block ghost-light" data-dismiss>' + CM.icon(o.onRest ? 'arrow-right' : 'x') + '<span data-i18n="' + (o.onRest ? 'emg.rest' : 'emg.close') + '"></span></button>' +
+      /* It closes ONLY through one of these two choices; the choice is logged on the case,
+         then the normal result shows underneath. */
+      '<div class="stack"><button type="button" class="btn btn-block ghost-light" data-choice="help">' + CM.icon('heart') + '<span data-i18n="emg.help"></span></button>' +
+      '<button type="button" class="btn btn-block ghost-light" data-choice="not">' + CM.icon('x') + '<span data-i18n="emg.not"></span></button></div>' +
       '</div>';
     document.body.appendChild(el);
     document.body.style.overflow = 'hidden';
     CM.i18n.apply(el);
     el.querySelector('.call-112').focus();
-    el.querySelector('[data-dismiss]').addEventListener('click', function () {
-      el.remove(); document.body.style.overflow = '';
-      if (prev && prev.focus) prev.focus();
-      if (o.onRest) o.onRest();
+    el.querySelectorAll('[data-choice]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        const choice = b.dataset.choice;
+        el.remove(); document.body.style.overflow = '';
+        if (o.caseId) CM.api.addEvent(o.caseId, { type: choice === 'help' ? 'emergency_help' : 'emergency_dismissed' });
+        if (prev && prev.focus) prev.focus();
+        if (o.onChoice) o.onChoice(choice);
+      });
     });
   }
 
@@ -382,7 +433,8 @@ window.CM = window.CM || {};
   }
   function watchOverdue() {
     CM.store.cases().forEach(function (c) {
-      if (c.status === 'waiting_hmo' && c.timer && !c.timer.stoppedAt && CM.api.timerState(c).remaining <= 0) {
+      const ts = Array.isArray(c.issues) && CM.api.timerState(c);
+      if (c.status === 'waiting_hmo' && ts && !ts.timer.stoppedAt && ts.remaining <= 0) {
         CM.api.getCase(c.caseId).then(function (x) { if (x && x.status === 'overdue') { notifyOverdue(x); updateOverdueBadge(); document.dispatchEvent(new CustomEvent('cm:overdue', { detail: x })); } });
       }
     });
@@ -394,7 +446,7 @@ window.CM = window.CM || {};
     if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
   }
 
-  CM.ui = { toast, sheet, ruleSheet, confirm: confirmDialog, prompt: promptDialog, emergency, deskMode, speak, stopSpeaking, copy, applyTheme, updateOverdueBadge, notifyOverdue, get speaking() { return speaking; } };
+  CM.ui = { toast, sheet, ruleSheet, askTimerStart, confirm: confirmDialog, prompt: promptDialog, emergency, deskMode, speak, stopSpeaking, copy, applyTheme, updateOverdueBadge, notifyOverdue, get speaking() { return speaking; } };
 
   /* ---------- Boot ---------- */
   CM.boot = function () {
@@ -413,7 +465,6 @@ window.CM = window.CM || {};
     // Service worker: off on localhost so edits show on reload (add ?sw=1 to test offline locally)
     const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
     if ('serviceWorker' in navigator && location.protocol.startsWith('http') && (!local || CM.qs('sw') === '1')) navigator.serviceWorker.register('sw.js').catch(function () {});
-    window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); CM.installPrompt = e; document.dispatchEvent(new Event('cm:installable')); });
     return true;
   };
 })();
