@@ -169,7 +169,10 @@ window.CM = window.CM || {};
       'emg.signs': 'Emergency signs: unconscious, not breathing, heavy bleeding, convulsions, an accident, or labour.',
       'emg.note': "If the button doesn't work, dial 112 on your phone.",
 
-      'privacy.title': 'Privacy notice'
+      'privacy.title': 'Privacy notice',
+      'nf.stamp': 'Not found', 'nf.title': "This page isn't on our list.",
+      'nf.body': 'The link may be old or mistyped. Your cases and settings are safe on this phone.',
+      'nf.home': 'Go to home', 'nf.emg': 'Emergency? Call 112.'
     },
 
     pcm: {
@@ -335,7 +338,10 @@ window.CM = window.CM || {};
       'emg.signs': 'Emergency signs: person no wake, no dey breathe, plenty blood, convulsion, accident, or labour.',
       'emg.note': 'If the button no work, dial 112 for your phone.',
 
-      'privacy.title': 'Privacy notice'
+      'privacy.title': 'Privacy notice',
+      'nf.stamp': 'We no see am', 'nf.title': 'This page no dey our list.',
+      'nf.body': 'Maybe the link don old or e get mistake. Your cases and settings still dey safe for this phone.',
+      'nf.home': 'Go home', 'nf.emg': 'Emergency? Call 112.'
     }
   };
 

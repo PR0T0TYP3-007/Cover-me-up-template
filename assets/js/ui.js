@@ -400,7 +400,7 @@ window.CM = window.CM || {};
   CM.boot = function () {
     const page = document.body.dataset.page;
     // Consent gate: every screen except welcome + privacy needs the consent tap first
-    if (!['welcome', 'privacy'].includes(page) && !CM.store.consent()) { location.replace('index.html'); return false; }
+    if (!['welcome', 'privacy', 'notfound'].includes(page) && !CM.store.consent()) { location.replace('index.html'); return false; }
     applyTheme();
     renderShell();
     CM.icons.hydrate(document);

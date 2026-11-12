@@ -1,7 +1,7 @@
 /* CoverMe service worker: offline shell + timer-overdue notification clicks.
    Network-first for our pages and assets (fresh after every deploy), cache-first for fonts.
    Bump VERSION whenever shell files change. */
-const VERSION = 'coverme-v3';
+const VERSION = 'coverme-v4';
 const SHELL = [
   './', 'index.html', 'setup.html', 'home.html', 'checking.html', 'result.html', 'timer.html', 'complaint.html',
   'cases.html', 'case.html', 'rights.html', 'settings.html', 'privacy.html', 'offline.html',
@@ -10,7 +10,8 @@ const SHELL = [
   'assets/js/ui.js', 'assets/js/illustrations.js', 'assets/js/voice.js',
   'assets/js/pages/welcome.js', 'assets/js/pages/setup.js', 'assets/js/pages/home.js', 'assets/js/pages/checking.js',
   'assets/js/pages/result.js', 'assets/js/pages/timer.js', 'assets/js/pages/complaint.js', 'assets/js/pages/cases.js',
-  'assets/js/pages/case.js', 'assets/js/pages/rights.js', 'assets/js/pages/settings.js', 'assets/js/pages/privacy.js'
+  'assets/js/pages/case.js', 'assets/js/pages/rights.js', 'assets/js/pages/settings.js', 'assets/js/pages/privacy.js',
+  '404.html', 'assets/js/pages/notfound.js'
 ];
 
 self.addEventListener('install', (e) => {
@@ -26,7 +27,7 @@ self.addEventListener('fetch', (e) => {
   if (url.pathname.includes('/api/')) return; // never cache API responses with personal data
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req).then((res) => { caches.open(VERSION).then((c) => c.put(req, res.clone())); return res; })
+      fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); } return res; })
         .catch(() => caches.match(req, { ignoreSearch: true }).then((r) => r || caches.match('offline.html')))
     );
     return;

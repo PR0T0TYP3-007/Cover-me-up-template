@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B5D4B">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="robots" content="noindex">
+  <title>CoverMe — Page not found</title>
+  <!-- GitHub Pages serves this file for ANY missing path (e.g. /Cover-me-up-template/a/b/c),
+       so relative URLs would break. Point every relative link at the site root first:
+       on *.github.io project sites that is the first path segment, elsewhere "/". -->
+  <script>
+    (function () {
+      var seg = location.pathname.split('/')[1];
+      var base = /\.github\.io$/.test(location.hostname) && seg ? '/' + seg + '/' : '/';
+      document.write('<base href="' + base + '">');
+    })();
+  </script>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
+</head>
+<body data-page="notfound">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app">
+    <header id="topbar"></header>
+
+    <main id="main" class="main">
+      <section class="hero nf fade-up" aria-labelledby="nf-title">
+        <div class="nf-num" aria-hidden="true">4<span class="nf-zero" id="nf-logo"></span>4</div>
+        <span class="stamp nf-stamp in"><i data-icon="search"></i><span data-i18n="nf.stamp"></span></span>
+        <h1 id="nf-title" data-i18n="nf.title"></h1>
+        <p class="muted nf-body" data-i18n="nf.body"></p>
+        <div class="nf-actions">
+          <a class="btn btn-paper btn-lg" href="home.html"><i data-icon="home"></i><span data-i18n="nf.home"></span></a>
+          <a class="btn btn-lg nf-ghost" href="rights.html"><i data-icon="book"></i><span data-i18n="rights.title"></span></a>
+        </div>
+      </section>
+
+      <a class="banner banner-danger nf-emg" href="tel:112">
+        <i data-icon="octagon"></i>
+        <span class="grow"><strong data-i18n="nf.emg"></strong><span data-i18n="emg.title"></span></span>
+        <i data-icon="phone"></i>
+      </a>
+    </main>
+  </div>
+
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/notfound.js"></script>
+</body>
+</html>
