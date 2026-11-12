@@ -1,0 +1,16 @@
+{
+  "name": "CoverMe — know your HMO rights",
+  "short_name": "CoverMe",
+  "description": "The calm advocate in your pocket: your HMO and NHIA rights at the hospital desk.",
+  "start_url": "home.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#0B5D4B",
+  "lang": "en",
+  "icons": [
+    { "src": "assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

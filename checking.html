@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B5D4B">
+  <title>CoverMe — Checking</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
+</head>
+<body data-page="checking" data-back="home.html" data-hard-back="1">
+  <div class="app">
+    <header id="topbar"></header>
+
+    <main id="main" class="main">
+      <section class="checking" aria-labelledby="check-title" aria-busy="true" id="checking">
+        <div class="orb" aria-hidden="true"><i data-icon="shield-check" class="icon-lg"></i></div>
+        <div class="stack" style="text-align:center">
+          <h1 id="check-title" data-i18n="check.title"></h1>
+          <p class="muted" data-i18n="check.sub"></p>
+        </div>
+        <ol class="steps" id="steps">
+          <li class="step" data-step="listening"><span class="mark"><i data-icon="check"></i></span><span data-i18n="check.listening"></span></li>
+          <li class="step" data-step="understanding"><span class="mark"><i data-icon="check"></i></span><span data-i18n="check.understanding"></span></li>
+          <li class="step" data-step="rules"><span class="mark"><i data-icon="check"></i></span><span data-i18n="check.rules"></span></li>
+          <li class="step" data-step="writing"><span class="mark"><i data-icon="check"></i></span><span data-i18n="check.writing"></span></li>
+        </ol>
+
+        <!-- Voice only: show the transcript before the verdict -->
+        <div class="card stack fade-up" id="heard" hidden>
+          <span class="eyebrow" data-i18n="check.heard"></span>
+          <p style="font-size:1.125rem"><q id="heard-text"></q></p>
+          <strong data-i18n="check.isRight"></strong>
+          <div class="btn-row">
+            <button type="button" class="btn btn-secondary" id="heard-edit"><i data-icon="pencil"></i><span data-i18n="check.fix"></span></button>
+            <button type="button" class="btn btn-primary" id="heard-ok"><i data-icon="check"></i><span data-i18n="check.yes"></span></button>
+          </div>
+        </div>
+      </section>
+      <p class="sr-only" id="announce" aria-live="polite"></p>
+    </main>
+  </div>
+
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/checking.js"></script>
+</body>
+</html>

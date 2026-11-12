@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B5D4B">
+  <title>CoverMe — Complaint</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
+</head>
+<body data-page="complaint" data-back="cases.html" data-title="complaint.title">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app">
+    <header id="topbar"></header>
+
+    <main id="main" class="main">
+      <!-- Escalation ladder: HMO -> NHIA call centre -> NHIA Enforcement -->
+      <section class="stack" aria-labelledby="ladder-title">
+        <div class="row-between"><h2 id="ladder-title" class="eyebrow" data-i18n="complaint.ladder"></h2><span class="small muted" id="step-of"></span></div>
+        <div class="ladder" id="ladder">
+          <span class="rung" data-r="hmo" data-i18n="recipient.hmo"></span>
+          <span class="rung" data-r="nhia_call" data-i18n="recipient.nhia_call"></span>
+          <span class="rung" data-r="nhia_enf" data-i18n="recipient.nhia_enf"></span>
+        </div>
+        <h1 id="to-title" style="font-size:var(--fs-22);margin-top:8px"></h1>
+      </section>
+
+      <!-- Personal details are asked for only here -->
+      <form class="card stack-2" id="details" novalidate aria-labelledby="details-title">
+        <h2 id="details-title" style="font-size:var(--fs-18)" data-i18n="complaint.details"></h2>
+        <div class="field">
+          <label for="name" data-i18n="complaint.name"></label>
+          <input id="name" class="input" autocomplete="name" required maxlength="80">
+        </div>
+        <div class="field">
+          <label for="phone" data-i18n="complaint.phone"></label>
+          <input id="phone" class="input" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20" placeholder="080X XXX XXXX">
+        </div>
+        <div class="field">
+          <label for="enrollee" data-i18n="complaint.enrollee"></label>
+          <input id="enrollee" class="input" autocomplete="off" maxlength="30">
+        </div>
+        <p class="why"><i data-icon="lock"></i><span data-i18n="complaint.why"></span></p>
+      </form>
+
+      <!-- Paper-style letter preview -->
+      <section class="stack" aria-labelledby="preview-title">
+        <h2 id="preview-title" class="eyebrow" data-i18n="complaint.preview"></h2>
+        <p class="small muted" data-i18n="complaint.previewHint"></p>
+        <article class="letter" id="letter" aria-live="polite"></article>
+      </section>
+
+      <!-- Send options -->
+      <section class="stack" aria-labelledby="send-title">
+        <h2 id="send-title" class="eyebrow" data-i18n="complaint.send"></h2>
+        <p class="field-error" id="required" hidden data-i18n="complaint.required"></p>
+        <div class="send-grid">
+          <a class="btn btn-secondary" id="send-email" href="#"><i data-icon="mail"></i><span data-i18n="complaint.email"></span></a>
+          <a class="btn btn-secondary" id="send-wa" href="#" target="_blank" rel="noopener"><i data-icon="chat"></i><span data-i18n="complaint.whatsapp"></span></a>
+          <button type="button" class="btn btn-secondary" id="send-pdf"><i data-icon="download"></i><span data-i18n="complaint.pdf"></span></button>
+          <button type="button" class="btn btn-secondary" id="send-copy"><i data-icon="copy"></i><span data-i18n="complaint.copy"></span></button>
+        </div>
+        <p class="small muted" id="next-step"></p>
+      </section>
+    </main>
+
+    <div class="action-bar">
+      <button type="button" class="btn btn-primary btn-lg btn-block" id="mark-sent"><i data-icon="check"></i><span data-i18n="complaint.mark"></span></button>
+    </div>
+  </div>
+
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/complaint.js"></script>
+</body>
+</html>

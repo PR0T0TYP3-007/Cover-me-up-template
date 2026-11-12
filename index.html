@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B5D4B">
+  <meta name="description" content="CoverMe helps Nigerians on HMO and NHIA insurance know their rights at the hospital.">
+  <title>CoverMe — Welcome</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
+</head>
+<body data-page="welcome">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app">
+    <header id="topbar"></header>
+
+    <main id="main" class="main">
+      <!-- Screen 1a: three swipe cards -->
+      <section id="intro" class="onboard" aria-roledescription="carousel" aria-label="Welcome">
+        <div class="slides" id="slides">
+          <article class="slide" aria-roledescription="slide" aria-labelledby="s1-t">
+            <div data-illus="rights"></div>
+            <h1 id="s1-t" data-i18n="welcome.s1.title"></h1>
+            <p data-i18n="welcome.s1.body"></p>
+          </article>
+          <article class="slide" aria-roledescription="slide" aria-labelledby="s2-t">
+            <div data-illus="desk"></div>
+            <h1 id="s2-t" data-i18n="welcome.s2.title"></h1>
+            <p data-i18n="welcome.s2.body"></p>
+          </article>
+          <article class="slide" aria-roledescription="slide" aria-labelledby="s3-t">
+            <div data-illus="letter"></div>
+            <h1 id="s3-t" data-i18n="welcome.s3.title"></h1>
+            <p data-i18n="welcome.s3.body"></p>
+          </article>
+        </div>
+        <div class="dots" id="dots" role="tablist"></div>
+      </section>
+
+      <!-- Screen 1b: consent -->
+      <section id="consent" class="stack-2 fade-up" hidden aria-labelledby="consent-title">
+        <div class="logo" style="margin-top:8px"><span id="consent-logo"></span></div>
+        <h1 id="consent-title" data-i18n="consent.title"></h1>
+        <ul class="consent-list">
+          <li><span class="ic"><i data-icon="lock"></i></span><span data-i18n="consent.l1"></span></li>
+          <li><span class="ic"><i data-icon="brain"></i></span><span data-i18n="consent.l2"></span></li>
+          <li><span class="ic"><i data-icon="trash"></i></span><span data-i18n="consent.l3"></span></li>
+        </ul>
+        <div class="disclaimer"><i data-icon="info"></i><span data-i18n="consent.notAdvice"></span></div>
+      </section>
+    </main>
+
+    <div class="action-bar" id="intro-actions">
+      <button type="button" class="btn btn-primary btn-lg btn-block" id="next-btn"><span data-i18n="welcome.next"></span><i data-icon="arrow-right"></i></button>
+      <button type="button" class="link-btn" id="skip-btn" data-i18n="common.skip"></button>
+    </div>
+    <div class="action-bar" id="consent-actions" hidden>
+      <button type="button" class="btn btn-primary btn-lg btn-block" id="agree-btn"><i data-icon="check"></i><span data-i18n="consent.agree"></span></button>
+      <a class="btn btn-ghost btn-block" href="privacy.html" data-i18n="consent.privacy"></a>
+    </div>
+  </div>
+
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/illustrations.js"></script>
+  <script src="assets/js/pages/welcome.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B5D4B">
+  <title>CoverMe — Home</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
+</head>
+<body data-page="home" data-nav="home">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app">
+    <header id="topbar"></header>
+
+    <main id="main" class="main">
+      <!-- Greeting + HMO -->
+      <section class="greet stack">
+        <h1 id="greeting"></h1>
+        <p class="muted" data-i18n="home.sub"></p>
+        <div><a class="hmo-pill" id="hmo-pill" href="setup.html?edit=1"></a></div>
+      </section>
+
+      <!-- Offline: last answer stays readable -->
+      <section id="last-script" class="script-card" hidden aria-labelledby="last-title">
+        <div class="row-between"><h2 id="last-title" class="eyebrow" data-i18n="home.lastScript"></h2><span id="last-badge"></span></div>
+        <p class="script-text" id="last-text"></p>
+        <a class="btn btn-secondary" id="last-open" href="result.html"><span data-i18n="case.viewAnswer"></span><i data-icon="arrow-right"></i></a>
+      </section>
+
+      <!-- Voice first -->
+      <section class="card voice-hero" aria-labelledby="voice-title">
+        <div class="voice-wrap" id="voice-wrap">
+          <span class="voice-ring r2" aria-hidden="true"></span>
+          <span class="voice-ring" aria-hidden="true"></span>
+          <button type="button" class="voice-btn" id="voice-btn" aria-pressed="false"></button>
+        </div>
+        <div id="voice-idle" class="stack" style="align-items:center">
+          <h2 id="voice-title" data-i18n="home.voice.title"></h2>
+          <p class="muted" data-i18n="home.voice.hint"></p>
+        </div>
+        <div class="rec-panel" id="rec-panel" hidden>
+          <canvas class="waveform" id="waveform" aria-hidden="true"></canvas>
+          <span class="rec-time" id="rec-time" role="timer" aria-live="off">0:60</span>
+          <span class="slide-cancel" id="slide-cancel"><i data-icon="chevron-left"></i><span></span></span>
+          <button type="button" class="link-btn" id="rec-cancel" data-i18n="common.cancel"></button>
+        </div>
+      </section>
+
+      <div class="or-divider" data-i18n="home.or"></div>
+
+      <!-- Text input -->
+      <form id="composer-form" class="stack" novalidate>
+        <label class="sr-only" for="message" data-i18n="home.text.label"></label>
+        <div class="composer">
+          <textarea id="message" rows="1" maxlength="1000" data-i18n-attr="placeholder:home.text.placeholder"></textarea>
+          <button type="submit" class="send" id="send-btn" disabled data-i18n-attr="aria-label:home.send"><i data-icon="send"></i></button>
+        </div>
+        <div class="counter" id="counter" aria-live="polite">0 / 1000</div>
+      </form>
+
+      <!-- Quick picks -->
+      <section class="stack" aria-labelledby="quick-title">
+        <h2 id="quick-title" class="eyebrow" data-i18n="home.quick"></h2>
+        <div class="chips">
+          <button type="button" class="chip" data-hint="drug_not_covered" data-key="chip.buyOutside"><i data-icon="pill"></i><span data-i18n="chip.buyOutside"></span></button>
+          <button type="button" class="chip" data-hint="cash_demanded" data-key="chip.payCash"><i data-icon="banknote"></i><span data-i18n="chip.payCash"></span></button>
+          <button type="button" class="chip" data-hint="auth_delay" data-key="chip.waitApproval"><i data-icon="hourglass"></i><span data-i18n="chip.waitApproval"></span></button>
+          <button type="button" class="chip" data-hint="referral_delay" data-key="chip.referral"><i data-icon="referral"></i><span data-i18n="chip.referral"></span></button>
+        </div>
+      </section>
+
+      <!-- Open cases -->
+      <section class="stack" aria-labelledby="open-title">
+        <div class="section-title"><h2 id="open-title" data-i18n="home.openCases"></h2><a href="cases.html" class="small" data-i18n="common.seeAll"></a></div>
+        <div class="stack" id="open-cases">
+          <div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>
+        </div>
+      </section>
+    </main>
+
+    <nav id="bottomnav"></nav>
+  </div>
+
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/illustrations.js"></script>
+  <script src="assets/js/voice.js"></script>
+  <script src="assets/js/pages/home.js"></script>
+</body>
+</html>
