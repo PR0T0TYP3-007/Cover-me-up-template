@@ -26,7 +26,7 @@ CM.voice = (function () {
       const data = new Uint8Array(analyser.frequencyBinCount); analyser.getByteTimeDomainData(data);
       c2.clearRect(0, 0, W, H);
       const bars = 36, gap = 3 * devicePixelRatio, bw = (W - gap * (bars - 1)) / bars;
-      c2.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--danger-600') || '#C62828';
+      c2.fillStyle = '#FFE3E3'; // drawn on the green hero
       for (let i = 0; i < bars; i++) {
         let peak = 0; const step = Math.floor(data.length / bars);
         for (let j = 0; j < step; j++) peak = Math.max(peak, Math.abs(data[i * step + j] - 128));

@@ -1,7 +1,7 @@
 /* CoverMe service worker: offline shell + timer-overdue notification clicks.
    Cache-first for the app shell, network-first for pages so updates land quickly.
    Bump VERSION whenever shell files change. */
-const VERSION = 'coverme-v1';
+const VERSION = 'coverme-v2';
 const SHELL = [
   './', 'index.html', 'setup.html', 'home.html', 'checking.html', 'result.html', 'timer.html', 'complaint.html',
   'cases.html', 'case.html', 'rights.html', 'settings.html', 'privacy.html', 'offline.html',

@@ -128,7 +128,7 @@ CM.api = (function () {
       askFor = { en: 'Confirmation that ' + (drug || 'the drug') + ' is covered', pcm: 'Confirm say ' + (drug || 'the drug') + ' dey covered' };
     } else if (facts.issueType === 'cash_demanded') {
       headline = { en: "You don't have to pay cash for covered services. Here's what to say.", pcm: 'You no suppose pay cash for service wey dey covered. Talk am like this.' };
-      script = { en: g + ' ' + mine.en + ' This service is covered by my plan, so please bill ' + H + ' directly. If anything is not covered, please show me in writing. Thank you.', pcm: g + ' ' + mine.pcm + ' My plan cover this service, so abeg bill ' + H + ' direct. If anything no dey covered, abeg show me for paper. Thank you.' };
+      script = { en: g + ' ' + mine.en + ' This service is covered by my plan, so please bill ' + H + ' directly. If anything is outside my plan, please show me in writing. Thank you.', pcm: g + ' ' + mine.pcm + ' My plan cover this service, so abeg bill ' + H + ' direct. If anything no dey covered, abeg show me for paper. Thank you.' };
       askFor = { en: 'Bill sent to your HMO, not to you', pcm: 'Make dem send the bill to your HMO, no be you' };
     } else if (facts.issueType === 'auth_delay') {
       headline = { en: 'Your HMO must give the approval code within 1 hour.', pcm: 'Your HMO suppose give approval code inside 1 hour.' };

@@ -29,6 +29,22 @@ The service worker is turned off on localhost so that your edits show when you r
 | 11 | Emergency takeover (the ⓘ button in the header, or triggered by keywords) | `CM.ui.emergency()` in `ui.js` |
 | – | Privacy notice and offline fallback | `privacy.html`, `offline.html` |
 
+## Design
+
+- **Concept:** "the calm advocate in your pocket". The look is editorial and warm, not clinical.
+- **Type:** Fraunces (display serif) for headings, the desk script and letters; Instrument Sans for the interface; JetBrains Mono for rule IDs, timestamps and labels. This replaces the plan's Plus Jakarta Sans and Inter so the app doesn't look like a default template.
+- **Signature pieces:**
+  - green hero blocks with an adire-inspired line pattern
+  - verdicts shown as an inked stamp
+  - rule citations as perforated tickets
+  - the desk script on a dark green card
+  - tactile pill buttons, and a floating dock nav on phones
+- **Layouts:**
+  - Phones (under 640px): single column, floating bottom dock, sticky primary action.
+  - Tablet (640px and up): roomier single column.
+  - Desktop (1024px and up): dark green sidebar (nav, New case, your HMO, language, emergency) and two-column screens. On result, the answer sits beside the call bar. Complaint shows the form beside the letter, and timer shows the ring beside the timeline. Welcome is a split screen.
+- **Colours:** The palette stays on the plan's tokens (`brand-700`, `paper`, `amber-500`, `danger-600` for emergencies only). Light and dark themes are both supported.
+
 ## Code layout
 
 ```

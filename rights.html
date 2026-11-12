@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
 </head>
@@ -18,14 +18,14 @@
     <header id="topbar"></header>
 
     <main id="main" class="main">
-      <div class="stack">
-        <h1 data-i18n="rights.title"></h1>
-        <p class="muted" id="sub"></p>
-      </div>
-      <div class="input-icon">
-        <i data-icon="search"></i>
-        <input id="q" class="input" type="search" autocomplete="off" data-i18n-attr="placeholder:rights.search;aria-label:rights.search">
-      </div>
+      <section class="hero stack-2">
+        <span class="eyebrow">NHIA · <span id="sub"></span></span>
+        <h1 style="font-size:2.25rem" data-i18n="rights.title"></h1>
+        <div class="input-icon" style="max-width:560px">
+          <i data-icon="search"></i>
+          <input id="q" class="input" type="search" autocomplete="off" data-i18n-attr="placeholder:rights.search;aria-label:rights.search">
+        </div>
+      </section>
       <div class="chips scroll" role="group" aria-label="Topics" id="topics">
         <button type="button" class="chip" data-topic="all" aria-pressed="true" data-i18n="topic.all"></button>
         <button type="button" class="chip" data-topic="drugs" aria-pressed="false"><i data-icon="pill"></i><span data-i18n="topic.drugs"></span></button>
@@ -34,7 +34,7 @@
         <button type="button" class="chip" data-topic="emergencies" aria-pressed="false"><i data-icon="heart"></i><span data-i18n="topic.emergencies"></span></button>
         <button type="button" class="chip" data-topic="access" aria-pressed="false"><i data-icon="shield-check"></i><span data-i18n="topic.access"></span></button>
       </div>
-      <div class="stack" id="list" aria-live="polite">
+      <div class="grid-cards three" id="list" aria-live="polite">
         <div class="skeleton sk-card" style="height:150px"></div><div class="skeleton sk-card" style="height:150px"></div>
       </div>
     </main>

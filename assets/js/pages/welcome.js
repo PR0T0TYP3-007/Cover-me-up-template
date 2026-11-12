@@ -4,7 +4,7 @@
   if (!CM.boot()) return;
 
   CM.$$('[data-illus]').forEach(function (el) { el.outerHTML = CM.illus[el.dataset.illus]; });
-  CM.$('#consent-logo').outerHTML = CM.logoSvg();
+  CM.$('#brand-logo').outerHTML = CM.logoSvg();
 
   const slides = CM.$('#slides'), dots = CM.$('#dots'), next = CM.$('#next-btn');
   const n = slides.children.length;

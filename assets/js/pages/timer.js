@@ -8,7 +8,7 @@
   CM.$('#topbar .back').href = 'case.html?id=' + encodeURIComponent(id);
   CM.$('#escalate').href = 'complaint.html?case=' + encodeURIComponent(id);
 
-  const R = 110, CIRC = 2 * Math.PI * R;
+  const R = 104, CIRC = 2 * Math.PI * R;
   const bar = CM.$('#bar'), ring = CM.$('#ring'), timeEl = CM.$('#time');
   bar.style.strokeDasharray = CIRC;
   let lastAnnounced = null, tickId = 0;

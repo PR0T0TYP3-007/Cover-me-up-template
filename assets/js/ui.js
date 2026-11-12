@@ -48,7 +48,9 @@ window.CM = window.CM || {};
   };
   CM.badge = {
     status(s) { const m = CM.meta.status[s] || CM.meta.status.open; return '<span class="badge badge-' + m.cls + '">' + CM.icon(m.icon) + esc(CM.t('status.' + s)) + '</span>'; },
-    verdict(v) { const m = CM.meta.verdict[v] || CM.meta.verdict.confirm_with_hmo; return '<span class="badge badge-' + m.cls + '">' + CM.icon(m.icon) + esc(CM.t('verdict.' + v)) + '</span>'; }
+    verdict(v) { const m = CM.meta.verdict[v] || CM.meta.verdict.confirm_with_hmo; return '<span class="badge badge-' + m.cls + '">' + CM.icon(m.icon) + esc(CM.t('verdict.' + v)) + '</span>'; },
+    /* The verdict as an inked rubber stamp (result screen) */
+    stamp(v, animate) { const m = CM.meta.verdict[v] || CM.meta.verdict.confirm_with_hmo; return '<span class="stamp stamp-' + m.cls + (animate ? ' in' : '') + '">' + CM.icon(m.icon) + esc(CM.t('verdict.' + v)) + '</span>'; }
   };
   CM.eventLabel = function (e) {
     const r = e.recipient ? CM.t(e.recipient === 'hmo' ? 'recipient.hmoInline' : 'recipient.' + e.recipient) : '';
@@ -72,7 +74,7 @@ window.CM = window.CM || {};
   CM.caseItem = function (c) {
     const title = CM.t('issue.' + c.issueType);
     const sub = CM.L(c.headline);
-    return '<a class="case-item" href="case.html?id=' + encodeURIComponent(c.caseId) + '">' +
+    return '<a class="case-item" data-status="' + esc(c.status) + '" href="case.html?id=' + encodeURIComponent(c.caseId) + '">' +
       '<span class="ic">' + CM.icon(CM.meta.issue[c.issueType] || 'message') + '</span>' +
       '<span class="grow"><span class="row-between"><span class="title">' + esc(title) + '</span></span>' +
       '<span class="meta">' + esc(sub) + '</span>' +
@@ -83,10 +85,10 @@ window.CM = window.CM || {};
   /* HMO call bar: one-tap call. Shown even when everything else fails. */
   CM.callBar = function (hmo, askFor) {
     if (!hmo || !hmo.tel) {
-      return '<a class="call-bar" href="setup.html?edit=1" style="text-decoration:none">' + CM.icon('phone') +
+      return '<a class="call-bar" href="setup.html?edit=1">' + '<span class="avatar" style="background:var(--paper-2);color:var(--brand-700)">' + CM.icon('plus') + '</span>' +
         '<span class="grow"><span class="name">' + esc(CM.t('home.setHmo')) + '</span><br><span class="ask">' + esc(CM.t('result.hmoLabel')) + '</span></span>' + CM.icon('chevron-right') + '</a>';
     }
-    return '<div class="call-bar"><span class="grow"><span class="ask">' + esc(CM.t('result.hmoLabel')) + ' · ' + esc(hmo.phone) + '</span><br><span class="name">' + esc(hmo.name) + '</span>' +
+    return '<div class="call-bar">' + CM.avatar(hmo.name) + '<span class="grow"><span class="name">' + esc(hmo.name) + '</span><br><span class="phone">' + esc(hmo.phone) + '</span>' +
       (askFor ? '<br><span class="ask">' + esc(CM.t('result.askFor')) + ' <strong>' + esc(CM.L(askFor)) + '</strong></span>' : '') + '</span>' +
       '<a href="tel:' + esc(hmo.tel) + '" aria-label="' + esc(CM.t('result.call') + ' ' + hmo.name + ', ' + hmo.phone) + '">' + CM.icon('phone') + '<span>' + esc(CM.t('result.call')) + '</span></a></div>';
   };
@@ -122,19 +124,50 @@ window.CM = window.CM || {};
       if (sos) sos.addEventListener('click', function () { CM.ui.emergency({}); });
       window.addEventListener('scroll', function () { top.classList.toggle('scrolled', window.scrollY > 4); }, { passive: true });
     }
+    const items = [['home', 'home.html', 'home', 'nav.home'], ['cases', 'cases.html', 'folder', 'nav.cases'], ['rights', 'rights.html', 'book', 'nav.rights'], ['settings', 'settings.html', 'settings', 'nav.settings']];
+    // Which nav section a page belongs to (sub-screens highlight their parent)
+    const SECTION = { home: 'home', checking: 'home', result: 'home', cases: 'cases', case: 'cases', timer: 'cases', complaint: 'cases', rights: 'rights', settings: 'settings', privacy: 'settings' };
+    const active = b.dataset.nav || SECTION[b.dataset.page];
+    const navLinks = function () {
+      return items.map(function (it) {
+        return '<a href="' + it[1] + '"' + (it[0] === active ? ' aria-current="page"' : '') + '>' + CM.icon(it[2]) + '<span data-i18n="' + it[3] + '"></span>' +
+          (it[0] === 'cases' ? '<span class="badge-dot overdue-count" hidden></span>' : '') + '</a>';
+      }).join('');
+    };
     const nav = $('#bottomnav');
     if (nav) {
-      const active = b.dataset.nav;
-      const items = [['home', 'home.html', 'home', 'nav.home'], ['cases', 'cases.html', 'folder', 'nav.cases'], ['rights', 'rights.html', 'book', 'nav.rights'], ['settings', 'settings.html', 'settings', 'nav.settings']];
       nav.className = 'bottomnav';
       nav.setAttribute('aria-label', 'Main');
-      nav.innerHTML = items.map(function (it) {
-        return '<a href="' + it[1] + '"' + (it[0] === active ? ' aria-current="page"' : '') + '>' + CM.icon(it[2]) + '<span data-i18n="' + it[3] + '"></span>' +
-          (it[0] === 'cases' ? '<span class="badge-dot" id="overdue-count" hidden></span>' : '') + '</a>';
-      }).join('');
+      nav.innerHTML = navLinks();
       b.classList.add('has-nav');
-      updateOverdueBadge();
     }
+
+    // Desktop sidebar (CSS shows it from 1024px). Onboarding screens stay full-bleed.
+    const app = $('.app');
+    if (app && ['welcome', 'setup', 'offline'].includes(b.dataset.page)) app.classList.add('no-side');
+    else if (app) {
+      const h = CM.profileHmo();
+      const side = document.createElement('aside');
+      side.className = 'sidenav';
+      side.setAttribute('aria-label', 'CoverMe');
+      side.innerHTML =
+        '<a class="logo" href="home.html" aria-label="CoverMe home">' + CM.logoSvg() + '<span>Cover<span class="me">Me</span></span></a>' +
+        '<a class="new-case" href="home.html#ask"><span class="plus">' + CM.icon('plus') + '</span><span class="lbl" data-i18n="cases.new"></span>' + CM.icon('mic', 'mic') + '</a>' +
+        '<nav aria-label="Main">' + navLinks() + '</nav>' +
+        '<div class="side-card"><span class="eyebrow" data-i18n="result.hmoLabel"></span>' +
+        (h ? '<a class="hmo" href="setup.html?edit=1">' + CM.avatar(h.name) + '<span>' + esc(h.name) + '</span></a>' +
+             '<a class="tel" href="tel:' + esc(h.tel) + '">' + CM.icon('phone', 'icon-sm') + esc(h.phone) + '</a>'
+           : '<a class="hmo" href="setup.html?edit=1">' + CM.icon('plus') + '<span data-i18n="home.setHmo"></span></a>') +
+        '</div>' +
+        '<div class="spacer"></div>' +
+        '<div class="segmented full" role="group" data-i18n-attr="aria-label:lang.switch">' +
+        '<button type="button" data-lang="en" aria-pressed="false">English</button><button type="button" data-lang="pcm" aria-pressed="false">Pidgin</button></div>' +
+        '<button type="button" class="sos">' + CM.icon('octagon') + '<span data-i18n="common.emergency"></span></button>';
+      app.prepend(side);
+      side.querySelectorAll('[data-lang]').forEach(function (btn) { btn.addEventListener('click', function () { CM.i18n.set(btn.dataset.lang); syncLang(); }); });
+      side.querySelector('.sos').addEventListener('click', function () { CM.ui.emergency({}); });
+    }
+    updateOverdueBadge();
     // Reserve space under the content for the sticky primary action (its height varies by screen)
     const bars = CM.$$('.action-bar');
     if (bars.length) {
@@ -150,13 +183,14 @@ window.CM = window.CM || {};
     syncLang();
   }
   function syncLang() {
-    CM.$$('#lang-toggle [data-lang]').forEach(function (btn) { btn.setAttribute('aria-pressed', String(btn.dataset.lang === CM.i18n.lang)); });
+    CM.$$('#lang-toggle [data-lang], .sidenav [data-lang]').forEach(function (btn) { btn.setAttribute('aria-pressed', String(btn.dataset.lang === CM.i18n.lang)); });
   }
   function updateOverdueBadge() {
-    const el = $('#overdue-count'); if (!el) return;
     const n = CM.store.cases().filter(function (c) { return c.status === 'overdue'; }).length;
-    el.hidden = !n; el.textContent = n;
-    if (n) el.setAttribute('aria-label', n + ' ' + CM.t('status.overdue'));
+    CM.$$('.overdue-count').forEach(function (el) {
+      el.hidden = !n; el.textContent = n;
+      if (n) el.setAttribute('aria-label', n + ' ' + CM.t('status.overdue'));
+    });
   }
 
   /* ---------- Toast ---------- */

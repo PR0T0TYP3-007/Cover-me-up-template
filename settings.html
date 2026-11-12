@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
 </head>
@@ -18,7 +18,9 @@
     <header id="topbar"></header>
 
     <main id="main" class="main">
-      <h1 data-i18n="settings.title"></h1>
+      <div class="page-head"><span class="eyebrow">CoverMe</span><h1 data-i18n="settings.title"></h1></div>
+      <div class="cols-even">
+        <div class="stack-3">
 
       <section class="stack" aria-labelledby="lang-h">
         <h2 id="lang-h" class="eyebrow" data-i18n="settings.language"></h2>
@@ -53,6 +55,8 @@
         </div>
       </section>
 
+        </div>
+        <div class="stack-3">
       <section class="stack" aria-labelledby="priv-h">
         <h2 id="priv-h" class="eyebrow" data-i18n="settings.privacy"></h2>
         <div class="list">
@@ -86,7 +90,9 @@
         <p class="small muted" style="text-align:center" data-i18n="settings.delete.sub"></p>
       </section>
 
-      <p class="small muted" style="text-align:center" data-i18n="settings.version"></p>
+      <p class="small muted mono" style="text-align:center" data-i18n="settings.version"></p>
+        </div>
+      </div>
     </main>
 
     <nav id="bottomnav"></nav>

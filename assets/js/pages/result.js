@@ -5,7 +5,7 @@
   if (!CM.boot()) return;
   const err = CM.qs('error');
   const id = CM.qs('case') || (CM.store.lastResult() && CM.store.lastResult().caseId);
-  let c = null;
+  let c = null, firstRender = true;
 
   /* ---------- Error state ---------- */
   function renderError() {
@@ -21,50 +21,50 @@
   /* ---------- Answer ---------- */
   function render() {
     const script = CM.L(c.script);
-    const html = [];
+    const main = [], side = [];
+    const enc = encodeURIComponent(c.caseId);
 
     if (c.emergency) {
-      html.push('<div class="banner banner-danger" role="alert">' + CM.icon('octagon') + '<span><strong>' + CM.esc(CM.t('emg.title')) + '</strong>' +
-        '<a href="tel:112" class="btn btn-danger" style="margin-top:8px">' + CM.icon('phone') + CM.esc(CM.t('emg.call')) + '</a></span></div>');
+      main.push('<div class="banner banner-danger" role="alert">' + CM.icon('octagon') + '<span><strong>' + CM.esc(CM.t('emg.title')) + '</strong>' +
+        '<a href="tel:112" class="btn btn-danger" style="margin-top:10px">' + CM.icon('phone') + CM.esc(CM.t('emg.call')) + '</a></span></div>');
     }
 
-    // 1. Verdict card (status badge + headline + confirm banner + proof)
-    html.push('<section class="verdict fade-up" data-verdict="' + c.verdict + '" aria-labelledby="headline">' +
-      '<div>' + CM.badge.verdict(c.verdict) + '</div>' +
+    // 1. Verdict card: stamp + one-sentence headline + confirm banner + proof tickets
+    main.push('<section class="verdict fade-up" data-verdict="' + c.verdict + '" aria-labelledby="headline">' +
+      '<div class="row-between"><span class="eyebrow">' + CM.esc(CM.t('issue.' + c.issueType)) + '</span>' + CM.badge.stamp(c.verdict, firstRender) + '</div>' +
       '<h1 class="headline" id="headline" tabindex="-1">' + CM.esc(CM.L(c.headline)) + '</h1>' +
       (c.confirmWithHmo && c.verdict !== 'confirm_with_hmo'
         ? '<div class="banner banner-amber">' + CM.icon('help') + '<span><strong>' + CM.esc(CM.t('result.confirm.title')) + '</strong>' + CM.esc(CM.t('result.confirm.body')) + '</span></div>'
         : c.verdict === 'confirm_with_hmo' ? '<div class="banner banner-amber">' + CM.icon('help') + '<span>' + CM.esc(CM.t('result.confirm.body')) + '</span></div>' : '') +
-      '<div class="stack"><span class="eyebrow">' + CM.esc(CM.t('result.proof')) + '</span><div class="chips">' +
-      c.citations.map(function (ct) { return '<button type="button" class="citation" data-rule="' + ct.ruleId + '">' + CM.icon('file') + '<span>' + CM.esc(CM.L(ct.title)) + '</span><span class="rid">' + ct.ruleId + '</span></button>'; }).join('') +
+      '<div class="stack"><span class="eyebrow">' + CM.esc(CM.t('result.proof')) + '</span><div class="citations">' +
+      c.citations.map(function (ct) { return '<button type="button" class="citation" data-rule="' + ct.ruleId + '"><span class="rid">' + ct.ruleId + '</span><span class="ct">' + CM.esc(CM.L(ct.title)) + CM.icon('chevron-right') + '</span></button>'; }).join('') +
       '</div></div></section>');
 
-    // What we heard (transcript, editable)
-    html.push('<div class="heard">' + CM.icon(c.source === 'voice' ? 'mic' : 'message') + '<div class="stack" style="gap:2px"><span class="small muted">' + CM.esc(CM.t('check.heard')) + '</span>' +
-      '<q>' + CM.esc(c.transcript) + '</q><a class="small" href="home.html?prefill=' + encodeURIComponent(c.transcript) + '">' + CM.esc(CM.t('result.heardEdit')) + '</a></div></div>');
-
     // 2. Desk script card
-    html.push('<section class="script-card" aria-labelledby="script-title">' +
+    main.push('<section class="script-card fade-up d1" aria-labelledby="script-title">' +
       '<h2 id="script-title" class="eyebrow">' + CM.esc(CM.t('result.script')) + '</h2>' +
       '<p class="script-text" id="script-text">' + CM.esc(script) + '</p>' +
       '<div class="script-actions">' +
-      '<button type="button" class="btn btn-tint" id="copy-btn">' + CM.icon('copy') + '<span>' + CM.esc(CM.t('common.copy')) + '</span></button>' +
-      '<button type="button" class="btn btn-tint" id="read-btn" aria-pressed="false">' + CM.icon('volume') + '<span>' + CM.esc(CM.t('result.read')) + '</span></button>' +
-      '<button type="button" class="btn btn-tint" id="desk-btn">' + CM.icon('maximize') + '<span>' + CM.esc(CM.t('result.show')) + '</span></button>' +
+      '<button type="button" class="btn" id="copy-btn">' + CM.icon('copy') + '<span>' + CM.esc(CM.t('common.copy')) + '</span></button>' +
+      '<button type="button" class="btn" id="read-btn" aria-pressed="false">' + CM.icon('volume') + '<span>' + CM.esc(CM.t('result.read')) + '</span></button>' +
+      '<button type="button" class="btn" id="desk-btn">' + CM.icon('maximize') + '<span>' + CM.esc(CM.t('result.show')) + '</span></button>' +
       '</div></section>');
 
-    // 3. HMO call bar
-    html.push(CM.callBar(c.hmo && c.hmo.tel ? c.hmo : CM.profileHmo(), c.askFor));
+    // What we heard (transcript, editable)
+    main.push('<div class="heard">' + CM.icon(c.source === 'voice' ? 'mic' : 'message') + '<div class="stack" style="gap:2px"><span class="eyebrow">' + CM.esc(CM.t('check.heard')) + '</span>' +
+      '<q>' + CM.esc(c.transcript) + '</q><a class="small" href="home.html?prefill=' + encodeURIComponent(c.transcript) + '">' + CM.esc(CM.t('result.heardEdit')) + '</a></div></div>');
 
-    // Timer explainer
-    if (c.timerMinutes && !c.timer) html.push('<div class="banner banner-info">' + CM.icon('timer') + '<span>' + CM.esc(CM.t('result.timerWhy')) + '</span></div>');
+    // 3. HMO call bar + timer explainer (sticky side column on desktop)
+    side.push(CM.callBar(c.hmo && c.hmo.tel ? c.hmo : CM.profileHmo(), c.askFor));
+    if (c.timerMinutes && !c.timer) side.push('<div class="banner banner-info">' + CM.icon('timer') + '<span>' + CM.esc(CM.t('result.timerWhy')) + '</span></div>');
+    side.push('<div class="list">' +
+      '<a class="list-item" href="complaint.html?case=' + enc + '">' + CM.icon('file') + '<span class="grow title">' + CM.esc(CM.t('result.complain')) + '</span>' + CM.icon('chevron-right', 'chev') + '</a>' +
+      '<a class="list-item" href="case.html?id=' + enc + '">' + CM.icon('folder') + '<span class="grow title">' + CM.esc(CM.t('case.timeline')) + '</span>' + CM.icon('chevron-right', 'chev') + '</a>' +
+      '<a class="list-item" href="home.html">' + CM.icon('plus') + '<span class="grow title">' + CM.esc(CM.t('result.newQ')) + '</span>' + CM.icon('chevron-right', 'chev') + '</a></div>');
+    side.push('<p class="disclaimer">' + CM.icon('info') + '<span>' + CM.esc(CM.t('result.disclaimer')) + '</span></p>');
 
-    html.push('<div class="row" style="justify-content:space-between;flex-wrap:wrap">' +
-      '<a class="link-btn" href="complaint.html?case=' + encodeURIComponent(c.caseId) + '">' + CM.esc(CM.t('result.complain')) + '</a>' +
-      '<a class="link-btn" href="home.html">' + CM.esc(CM.t('result.newQ')) + '</a></div>');
-    html.push('<p class="disclaimer">' + CM.icon('info') + '<span>' + CM.esc(CM.t('result.disclaimer')) + '</span></p>');
-
-    CM.$('#answer').innerHTML = html.join('');
+    CM.$('#answer').innerHTML = '<div class="cols"><div class="col-main">' + main.join('') + '</div><div class="col-side sticky">' + side.join('') + '</div></div>';
+    firstRender = false;
     CM.$('#loading').hidden = true; CM.$('#answer').hidden = false;
 
     // 4. Primary action in the thumb zone

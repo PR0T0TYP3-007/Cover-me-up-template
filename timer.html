@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
 </head>
@@ -18,36 +18,42 @@
     <header id="topbar"></header>
 
     <main id="main" class="main">
-      <section class="timer-wrap" aria-labelledby="timer-status">
-        <span class="demo-pill" id="demo-pill" hidden data-i18n="timer.demo"></span>
-        <div class="timer-ring" id="ring" data-phase="ok">
-          <svg viewBox="0 0 248 248" aria-hidden="true">
-            <circle class="track" cx="124" cy="124" r="110" fill="none" stroke-width="14"/>
-            <circle class="bar" id="bar" cx="124" cy="124" r="110" fill="none" stroke-width="14" stroke-linecap="round"/>
-          </svg>
-          <div class="center">
-            <span class="time" id="time" role="timer" aria-live="off">60:00</span>
-            <span class="label" id="time-label" data-i18n="timer.left"></span>
+      <div class="cols">
+        <div class="col-main">
+          <section class="card timer-wrap" aria-labelledby="timer-status" style="background-image:var(--pattern-ink)">
+            <span class="demo-pill" id="demo-pill" hidden data-i18n="timer.demo"></span>
+            <div class="timer-ring" id="ring" data-phase="ok">
+              <svg viewBox="0 0 260 260" aria-hidden="true">
+                <circle class="ticks" cx="130" cy="130" r="124" fill="none" stroke-width="6" stroke-dasharray="1.6 11.39"/>
+                <circle class="track" cx="130" cy="130" r="104" fill="none" stroke-width="16"/>
+                <circle class="bar" id="bar" cx="130" cy="130" r="104" fill="none" stroke-width="16" stroke-linecap="round"/>
+              </svg>
+              <div class="center">
+                <span class="time" id="time" role="timer" aria-live="off">60:00</span>
+                <span class="label" id="time-label" data-i18n="timer.left"></span>
+              </div>
+            </div>
+            <div class="stack" style="align-items:center;text-align:center">
+              <h1 id="timer-status" style="font-size:1.75rem"></h1>
+              <p class="mono muted" id="deadline"></p>
+            </div>
+          </section>
+          <p class="sr-only" id="announce" aria-live="polite"></p>
+
+          <div class="banner banner-danger" id="overdue-banner" hidden role="alert">
+            <i data-icon="alert"></i>
+            <span><strong data-i18n="timer.overdueTitle"></strong><span data-i18n="timer.overdueBody"></span></span>
           </div>
         </div>
-        <div class="stack" style="align-items:center;text-align:center">
-          <h1 id="timer-status" style="font-size:var(--fs-22)"></h1>
-          <p class="muted" id="deadline"></p>
+
+        <div class="col-side">
+          <div id="call"></div>
+          <section class="card stack-2" aria-labelledby="sofar-title">
+            <h2 id="sofar-title" class="eyebrow" data-i18n="timer.sofar"></h2>
+            <div id="timeline"></div>
+          </section>
         </div>
-      </section>
-      <p class="sr-only" id="announce" aria-live="polite"></p>
-
-      <div class="banner banner-danger" id="overdue-banner" hidden role="alert">
-        <i data-icon="alert"></i>
-        <span><strong data-i18n="timer.overdueTitle"></strong><span data-i18n="timer.overdueBody"></span></span>
       </div>
-
-      <div id="call"></div>
-
-      <section class="card stack-2" aria-labelledby="sofar-title">
-        <h2 id="sofar-title" class="eyebrow" data-i18n="timer.sofar"></h2>
-        <div id="timeline"></div>
-      </section>
     </main>
 
     <div class="action-bar">

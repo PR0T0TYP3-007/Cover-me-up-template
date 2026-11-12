@@ -22,12 +22,12 @@
         CM.icon(s.remaining <= 0 ? 'alert' : 'timer') + '<span class="grow"><strong>' + CM.esc(s.remaining <= 0 ? CM.t('timer.overdue', { m: Math.floor(-s.remaining / 60000) }) : CM.fmt.clock(s.remaining) + ' ' + CM.t('timer.left')) + '</strong>' +
         CM.esc(CM.t('case.openTimer')) + '</span>' + CM.icon('chevron-right') + '</a>';
     }
-    CM.$('#content').innerHTML =
+    CM.$('#content').innerHTML = '<div class="cols"><div class="col-main">' +
       '<section class="card stack" aria-labelledby="case-h">' +
         '<div class="row" style="gap:12px"><span class="avatar" style="background:var(--brand-50);color:var(--brand-700)">' + CM.icon(CM.meta.issue[c.issueType] || 'message') + '</span>' +
         '<div class="grow" style="flex:1;min-width:0"><h1 id="case-h" style="font-size:var(--fs-22)">' + CM.esc(CM.t('issue.' + c.issueType)) + '</h1>' +
         '<span class="small muted">' + CM.esc(CM.t('case.started', { t: CM.fmt.dateTime(c.createdAt) })) + (c.hospital ? ' · ' + CM.esc(c.hospital) : '') + '</span></div></div>' +
-        '<div class="row" style="flex-wrap:wrap">' + CM.badge.status(c.status) + CM.badge.verdict(c.verdict) + '</div>' +
+        '<div class="row" style="flex-wrap:wrap;gap:12px">' + CM.badge.status(c.status) + CM.badge.stamp(c.verdict) + '</div>' +
         '<p style="font-weight:600">' + CM.esc(CM.L(c.headline)) + '</p>' +
         (c.paidNaira ? '<p class="small">' + CM.icon('banknote', 'icon-sm') + ' ' + CM.esc(CM.t('case.paidTotal', { amount: CM.fmt.naira(c.paidNaira) })) + '</p>' : '') +
         (c.status === 'refunded' ? '<p class="small" style="color:var(--success-600);font-weight:600">' + CM.esc(CM.t('case.refundTotal', { amount: CM.fmt.naira(c.refundNaira) })) + '</p>' : '') +
@@ -41,8 +41,9 @@
         '<button type="button" class="chip" data-add="paid">' + CM.icon('banknote') + '<span>' + CM.esc(CM.t('case.add.paid')) + '</span></button>' +
         '<button type="button" class="chip" data-add="note">' + CM.icon('pencil') + '<span>' + CM.esc(CM.t('case.add.note')) + '</span></button>' +
         '</div></section>' : '') +
+      '</div><div class="col-side">' +
       '<section class="card stack-2" aria-labelledby="tl-h"><h2 id="tl-h" class="eyebrow">' + CM.esc(CM.t('case.timeline')) + '</h2>' + CM.renderTimeline(c.events) + '</section>' +
-      '<button type="button" class="btn btn-ghost" id="del" style="color:var(--danger-600);align-self:center">' + CM.icon('trash') + '<span>' + CM.esc(CM.t('case.delete')) + '</span></button>';
+      '<button type="button" class="btn btn-ghost" id="del" style="color:var(--danger-600);align-self:center">' + CM.icon('trash') + '<span>' + CM.esc(CM.t('case.delete')) + '</span></button></div></div>';
 
     CM.$('#actions').hidden = closed;
     CM.$('#actions').innerHTML = closed ? '' :

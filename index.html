@@ -10,13 +10,27 @@
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/img/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script>try{var s=JSON.parse(localStorage.getItem('cm.settings')||'{}');if(s.theme==='light'||s.theme==='dark')document.documentElement.dataset.theme=s.theme}catch(e){}</script>
 </head>
 <body data-page="welcome">
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app">
+    <!-- Desktop only: brand panel beside the consent column -->
+    <aside class="welcome-brand" aria-hidden="true">
+      <a class="logo" href="index.html" tabindex="-1"><span id="brand-logo"></span><span>Cover<span class="me">Me</span></span></a>
+      <div class="stack-2">
+        <h1><span data-i18n="welcome.hero.a"></span> <em data-i18n="welcome.hero.b"></em> <span data-i18n="welcome.hero.c"></span></h1>
+        <p class="lede" data-i18n="welcome.lede"></p>
+      </div>
+      <div class="features">
+        <div class="feature"><span class="n">01</span><strong data-i18n="welcome.s1.title"></strong><span data-i18n="welcome.s1.body"></span></div>
+        <div class="feature"><span class="n">02</span><strong data-i18n="welcome.s2.title"></strong><span data-i18n="welcome.s2.body"></span></div>
+        <div class="feature"><span class="n">03</span><strong data-i18n="welcome.s3.title"></strong><span data-i18n="welcome.s3.body"></span></div>
+      </div>
+    </aside>
+
     <header id="topbar"></header>
 
     <main id="main" class="main">
@@ -25,16 +39,19 @@
         <div class="slides" id="slides">
           <article class="slide" aria-roledescription="slide" aria-labelledby="s1-t">
             <div data-illus="rights"></div>
+            <span class="num">01 / 03</span>
             <h1 id="s1-t" data-i18n="welcome.s1.title"></h1>
             <p data-i18n="welcome.s1.body"></p>
           </article>
           <article class="slide" aria-roledescription="slide" aria-labelledby="s2-t">
             <div data-illus="desk"></div>
+            <span class="num">02 / 03</span>
             <h1 id="s2-t" data-i18n="welcome.s2.title"></h1>
             <p data-i18n="welcome.s2.body"></p>
           </article>
           <article class="slide" aria-roledescription="slide" aria-labelledby="s3-t">
             <div data-illus="letter"></div>
+            <span class="num">03 / 03</span>
             <h1 id="s3-t" data-i18n="welcome.s3.title"></h1>
             <p data-i18n="welcome.s3.body"></p>
           </article>
@@ -44,8 +61,8 @@
 
       <!-- Screen 1b: consent -->
       <section id="consent" class="stack-2 fade-up" hidden aria-labelledby="consent-title">
-        <div class="logo" style="margin-top:8px"><span id="consent-logo"></span></div>
-        <h1 id="consent-title" data-i18n="consent.title"></h1>
+        <span class="eyebrow">CoverMe · <span data-i18n="privacy.title"></span></span>
+        <h1 id="consent-title" data-i18n="consent.title" style="font-size:2.25rem"></h1>
         <ul class="consent-list">
           <li><span class="ic"><i data-icon="lock"></i></span><span data-i18n="consent.l1"></span></li>
           <li><span class="ic"><i data-icon="brain"></i></span><span data-i18n="consent.l2"></span></li>

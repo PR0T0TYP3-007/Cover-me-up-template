@@ -4,7 +4,8 @@
 
   function greet() {
     const h = new Date().getHours();
-    CM.$('#greeting').textContent = CM.t(h < 12 ? 'home.greet.morning' : h < 17 ? 'home.greet.afternoon' : 'home.greet.evening');
+    CM.$('#greeting').textContent = CM.t(h < 12 ? 'home.greet.morning' : h < 17 ? 'home.greet.afternoon' : 'home.greet.evening') + '.';
+    CM.$('#today').textContent = new Date().toLocaleDateString('en-NG', { weekday: 'long', day: 'numeric', month: 'long' });
     const p = CM.store.profile(); const h2 = p.hmoId && CM.api.hmo(p.hmoId);
     CM.$('#hmo-pill').innerHTML = h2
       ? CM.avatar(h2.name) + '<span class="name">' + CM.esc(h2.name) + '</span>' + CM.icon('pencil', 'icon-sm')
@@ -32,7 +33,7 @@
   if (prefill) { ta.value = prefill; syncText(); ta.focus(); history.replaceState(null, '', 'home.html'); }
 
   /* ---- Quick-pick chips ---- */
-  CM.$$('.chip[data-hint]').forEach(function (b) {
+  CM.$$('[data-hint]').forEach(function (b) {
     b.addEventListener('click', function () { submit({ text: CM.t(b.dataset.key), issueHint: b.dataset.hint, source: 'chip' }); });
   });
 
