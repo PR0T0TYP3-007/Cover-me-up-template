@@ -521,10 +521,12 @@ button.list-item:hover, a.list-item:hover, label.list-item:hover { background: c
 .script-card.on-paper .eyebrow { color: var(--muted); }
 .script-card.on-paper .script-text::before { color: var(--brand-500); }
 
-.call-bar { display: flex; align-items: center; gap: 14px; background: var(--surface); color: var(--ink); border: 1.5px solid var(--line-strong); border-radius: var(--r-card); padding: 14px 14px 14px 18px; }
+.call-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; background: var(--surface); color: var(--ink); border: 1.5px solid var(--line-strong); border-radius: var(--r-card); padding: 14px 14px 14px 18px; }
 .call-bar .grow { flex: 1; min-width: 0; }
 .call-bar .name { font: 600 var(--fs-18)/1.2 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .call-bar .ask { font-size: var(--fs-14); color: var(--muted); }
+.call-bar .ask-row { flex-basis: 100%; padding-top: 10px; border-top: 1px dashed var(--line-strong); display: flex; gap: 8px; align-items: flex-start; }
+.call-bar .ask-row .icon { width: 18px; height: 18px; color: var(--brand-700); flex: none; margin-top: 1px; }
 .call-bar .ask strong { color: var(--ink); }
 .call-bar .phone { font: 600 .875rem/1.4 var(--font-mono); color: var(--brand-700); }
 .call-bar a { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 20px; border-radius: var(--r-pill); background: var(--brand-700); color: var(--on-brand); font-weight: 700; text-decoration: none; flex: none; box-shadow: var(--press); transition: transform var(--t-fast), box-shadow var(--t-fast); }
@@ -563,7 +565,8 @@ dialog.dialog::backdrop { background: var(--backdrop); }
 /* ---------- 12. Timer ---------- */
 .timer-wrap { display: flex; flex-direction: column; align-items: center; gap: var(--s2); padding: var(--s3) var(--s2); }
 .timer-ring { position: relative; width: 260px; height: 260px; }
-.timer-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-ring > svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-ring .center .done-ic { width: 64px; height: 64px; stroke-width: 2.5; color: var(--success-600); }
 .timer-ring .track { stroke: var(--line); }
 .timer-ring .bar { stroke: var(--t-color, var(--success-600)); transition: stroke-dashoffset 1s linear, stroke var(--t); }
 .timer-ring[data-phase="warn"] { --t-color: var(--amber-500); }

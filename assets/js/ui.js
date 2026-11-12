@@ -88,9 +88,10 @@ window.CM = window.CM || {};
       return '<a class="call-bar" href="setup.html?edit=1">' + '<span class="avatar" style="background:var(--paper-2);color:var(--brand-700)">' + CM.icon('plus') + '</span>' +
         '<span class="grow"><span class="name">' + esc(CM.t('home.setHmo')) + '</span><br><span class="ask">' + esc(CM.t('result.hmoLabel')) + '</span></span>' + CM.icon('chevron-right') + '</a>';
     }
-    return '<div class="call-bar">' + CM.avatar(hmo.name) + '<span class="grow"><span class="name">' + esc(hmo.name) + '</span><br><span class="phone">' + esc(hmo.phone) + '</span>' +
-      (askFor ? '<br><span class="ask">' + esc(CM.t('result.askFor')) + ' <strong>' + esc(CM.L(askFor)) + '</strong></span>' : '') + '</span>' +
-      '<a href="tel:' + esc(hmo.tel) + '" aria-label="' + esc(CM.t('result.call') + ' ' + hmo.name + ', ' + hmo.phone) + '">' + CM.icon('phone') + '<span>' + esc(CM.t('result.call')) + '</span></a></div>';
+    // "Ask for" gets its own full-width row so it never gets squeezed beside the Call button on phones
+    return '<div class="call-bar">' + CM.avatar(hmo.name) + '<span class="grow"><span class="name">' + esc(hmo.name) + '</span><br><span class="phone">' + esc(hmo.phone) + '</span></span>' +
+      '<a href="tel:' + esc(hmo.tel) + '" aria-label="' + esc(CM.t('result.call') + ' ' + hmo.name + ', ' + hmo.phone) + '">' + CM.icon('phone') + '<span>' + esc(CM.t('result.call')) + '</span></a>' +
+      (askFor ? '<span class="ask-row ask">' + CM.icon('file') + '<span>' + esc(CM.t('result.askFor')) + ' <strong>' + esc(CM.L(askFor)) + '</strong></span></span>' : '') + '</div>';
   };
   CM.profileHmo = function () {
     const h = CM.store.profile().hmoId && CM.api.hmo(CM.store.profile().hmoId);

@@ -1,7 +1,7 @@
 /* CoverMe service worker: offline shell + timer-overdue notification clicks.
-   Cache-first for the app shell, network-first for pages so updates land quickly.
+   Network-first for our pages and assets (fresh after every deploy), cache-first for fonts.
    Bump VERSION whenever shell files change. */
-const VERSION = 'coverme-v2';
+const VERSION = 'coverme-v3';
 const SHELL = [
   './', 'index.html', 'setup.html', 'home.html', 'checking.html', 'result.html', 'timer.html', 'complaint.html',
   'cases.html', 'case.html', 'rights.html', 'settings.html', 'privacy.html', 'offline.html',
@@ -31,12 +31,16 @@ self.addEventListener('fetch', (e) => {
     );
     return;
   }
-  e.respondWith(caches.match(req).then((r) => r || fetch(req).then((res) => {
-    if (res.ok && (url.origin === location.origin || url.hostname.endsWith('gstatic.com') || url.hostname.endsWith('googleapis.com'))) {
-      const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy));
-    }
-    return res;
-  })));
+  const save = (res) => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); } return res; };
+  // Our own CSS/JS: network first, so a new deploy shows up on the next visit; cache when offline.
+  if (url.origin === location.origin) {
+    e.respondWith(fetch(req).then(save).catch(() => caches.match(req, { ignoreSearch: true })));
+    return;
+  }
+  // Fonts never change: cache first.
+  if (url.hostname.endsWith('gstatic.com') || url.hostname.endsWith('googleapis.com')) {
+    e.respondWith(caches.match(req).then((r) => r || fetch(req).then(save)));
+  }
 });
 
 /* Production: the API's pg-boss job sends a Web Push at the deadline. */

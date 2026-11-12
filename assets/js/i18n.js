@@ -100,7 +100,7 @@ window.CM = window.CM || {};
       'timer.sofar': 'Timeline so far', 'timer.respondedTitle': 'What did your HMO say?',
       'timer.gotCode': 'Gave the approval code', 'timer.calledBack': 'Called back, still waiting', 'timer.refused': 'Refused or no answer',
       'timer.code': 'Approval code (optional)', 'timer.announce': '{m} minutes left',
-      'timer.none': 'There is no timer on this case.', 'timer.start': 'Start timer', 'timer.stopped': 'Timer stopped: approval received',
+      'timer.none': 'There is no timer on this case.', 'timer.start': 'Start timer', 'timer.stopped': 'Timer stopped: approval received', 'timer.backToCase': 'Back to case',
       'timer.overdueNotif': 'Your HMO missed the 1-hour deadline. Tap to escalate.',
 
       'complaint.title': 'Complaint', 'complaint.to': 'To: {r}', 'complaint.ladder': 'Escalation path', 'complaint.step': 'Step {n} of 3',
@@ -266,7 +266,7 @@ window.CM = window.CM || {};
       'timer.sofar': 'Wetin don happen so far', 'timer.respondedTitle': 'Wetin your HMO talk?',
       'timer.gotCode': 'Dem give approval code', 'timer.calledBack': 'Dem call back, we still dey wait', 'timer.refused': 'Dem refuse or no answer',
       'timer.code': 'Approval code (if you get am)', 'timer.announce': '{m} minutes remain',
-      'timer.none': 'This case no get timer.', 'timer.start': 'Start timer', 'timer.stopped': 'Timer don stop: approval don come',
+      'timer.none': 'This case no get timer.', 'timer.start': 'Start timer', 'timer.stopped': 'Timer don stop: approval don come', 'timer.backToCase': 'Go back to the case',
       'timer.overdueNotif': 'Your HMO no answer inside 1 hour. Tap make you escalate.',
 
       'complaint.title': 'Complaint', 'complaint.to': 'Go: {r}', 'complaint.ladder': 'How e go escalate', 'complaint.step': 'Step {n} for 3',

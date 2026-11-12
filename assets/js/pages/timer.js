@@ -39,10 +39,19 @@
     if (stopped) {
       ring.dataset.phase = 'ok'; bar.style.stroke = 'var(--success-600)';
       bar.style.strokeDashoffset = 0;
-      timeEl.innerHTML = CM.icon('check', 'icon-lg');
+      timeEl.innerHTML = CM.icon('check', 'done-ic');
       CM.$('#time-label').textContent = '';
       CM.$('#timer-status').textContent = CM.t(c.status === 'escalated' ? 'status.escalated' : c.status === 'resolved' || c.status === 'refunded' ? 'status.' + c.status : 'timer.stopped');
       CM.$('#overdue-banner').hidden = true;
+      // Closed or approved: no "Escalate" unless the case is mid-escalation (next step is NHIA)
+      if (c.status !== 'escalated') {
+        const esc = CM.$('#escalate');
+        esc.className = 'btn btn-secondary btn-lg';
+        esc.href = 'case.html?id=' + encodeURIComponent(id);
+        esc.onclick = null;
+        esc.innerHTML = CM.icon('folder') + '<span>' + CM.esc(CM.t('timer.backToCase')) + '</span>';
+      }
+      CM.$('#responded').hidden = true;
       clearInterval(tickId);
       return;
     }
